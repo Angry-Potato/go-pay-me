@@ -1,0 +1,23 @@
+## 9th May
+
+With no time for any real work tonight, I decided to read the brief a bunch of times and do a little research; I want to be clear about what's expected, and start exploring my options.
+
+I find the brief unusual. The requirement of an API design prior to implementation is unexpected, and the language of the design requirement is perhaps purposefully ambiguous.
+
+I like the sound of formally designing the API prior to implementation - it's like TDD at the service level.
+
+The most confusing part of the brief is:
+
+> _"Provide a design for part of a payments API."_
+
+What does "part" of an API mean? I will assume it's reference to the fact that this particular API will be part of a group of services that are collectively responsible for payments, e.g. this payments API will expose payments resources whilst another service enforces processing of those payments.
+
+I believe the vague language of the design requirement is deliberate. The only design format stipulation being that the document is PDF tells me that a simple OpenAPI/Swagger JSON file won't cut it.
+
+I believe, to satisfy the design aspect of the brief, I will supply an OpenAPI driven design specification, and perhaps a simple wireframe demonstrating a possible client GUI, in a single PDF.
+
+The implementation aspect should be simple. There are numerous Golang REST API web frameworks to choose from, I imagine I won't need to stray far past any auto-generation they may offer. Any development I undertake will be done using TDD. There should be a detailed README instructing users how they might build, run, and test the API, and where they might find it running in the wild.
+
+I'd like to find a UI language / framework I'm unfamiliar with, and throw a small GUI up to consume from the API.
+
+These might be some best laid plans, we shall see.
