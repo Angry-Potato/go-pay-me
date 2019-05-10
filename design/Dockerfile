@@ -20,3 +20,7 @@ COPY --from=swagger2markup /usr/src/swagger2markup-cli/build/libs/swagger2markup
 
 RUN apt-get update && apt-get install -y default-jre && \
     gem install asciidoctor-pdf --pre
+
+COPY swagger2markup.properties swagger2pdf.sh ./
+
+ENTRYPOINT [ "/usr/src/swagger2pdf.sh" ]
