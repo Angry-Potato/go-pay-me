@@ -29,3 +29,5 @@ I remembered Google's Protobuf is a thing today. Could be interesting to use thi
 After looking in more detail at Protobuf, and Pact, it still looks like a swagger / openapi API design document is the best choice for this project because swagger / openapi is specifically about documenting APIs for human readers.
 
 It looks like it's possible to generate a swagger JSON file from scratch, then convert this file to AsciiDoc, and convert _that_ file to PDF.
+
+Spent some time testing, writing, and documenting a simple script tool that will convert a swagger JSON file to a PDF. The tool is dockerised for convenience. I just need to write a swagger file based on the given example payments list, and the PDF is taken care of!
