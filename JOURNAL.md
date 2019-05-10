@@ -21,3 +21,11 @@ The implementation aspect should be simple. There are numerous Golang REST API w
 I'd like to find a UI language / framework I'm unfamiliar with, and throw a small GUI up to consume from the API.
 
 These might be some best laid plans, we shall see.
+
+## 10th May
+
+I remembered Google's Protobuf is a thing today. Could be interesting to use this to define / design an API prior to implementing it. Maybe look at other service contract systems like Pact.
+
+After looking in more detail at Protobuf, and Pact, it still looks like a swagger / openapi API design document is the best choice for this project because swagger / openapi is specifically about documenting APIs for human readers.
+
+It looks like it's possible to generate a swagger JSON file from scratch, then convert this file to AsciiDoc, and convert _that_ file to PDF.
