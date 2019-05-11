@@ -3,7 +3,7 @@
   "info": {
     "title": "Payments",
     "description": "This is a payments API design.",
-    "version": "3.2.0",
+    "version": "3.3.0",
     "contact": {
       "name": "Liam Humphreys",
       "url": "https://github.com/Angry-Potato"
@@ -348,7 +348,49 @@
             "description": "Internal Server Error"
           }
         }
+      },
+      "put": {
+        "summary": "Bulk update payments.",
+        "description": "Bulk updates payment resources, as well as all their sub-resources, in the service.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Payment resources to be updated.",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Payment"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Payment"
+              }
+            }
+          },
+          "304": {
+            "description": "Not Modified"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       }
     }
+  },
+  "externalDocs": {
+    "description": "Hosted on Github",
+    "url": "https://raw.githubusercontent.com/Angry-Potato/go-pay-me/master/design/payments.swagger.json"
   }
 }
