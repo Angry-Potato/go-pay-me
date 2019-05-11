@@ -3,7 +3,7 @@
   "info": {
     "title": "Payments",
     "description": "This is a payments API design.",
-    "version": "3.3.0",
+    "version": "3.4.0",
     "contact": {
       "name": "Liam Humphreys",
       "url": "https://github.com/Angry-Potato"
@@ -332,7 +332,7 @@
       },
       "get": {
         "summary": "List all payments.",
-        "description": "Lists all payment resources in the service.",
+        "description": "Lists all payment resources.",
         "parameters": [],
         "responses": {
           "200": {
@@ -351,7 +351,7 @@
       },
       "put": {
         "summary": "Bulk update payments.",
-        "description": "Bulk updates payment resources, as well as all their sub-resources, in the service.",
+        "description": "Bulk updates payment resources, as well as all their sub-resources.",
         "parameters": [
           {
             "in": "body",
@@ -381,6 +381,19 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete all payments.",
+        "description": "Deletes all payment resources, and their sub-resources.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
           },
           "500": {
             "description": "Internal Server Error"
