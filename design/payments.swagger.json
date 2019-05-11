@@ -3,7 +3,7 @@
   "info": {
     "title": "Payments",
     "description": "This is a payments API design.",
-    "version": "2.1.0",
+    "version": "3.0.0",
     "contact": {
       "name": "Liam Humphreys",
       "url": "https://github.com/Angry-Potato"
@@ -21,9 +21,12 @@
   "definitions": {
     "Payment": {
       "type": "object",
+      "description": "A payment between two parties.",
+      "required": ["id", "organisation_id", "attributes"],
       "properties": {
         "type": {
           "type": "string",
+          "default": "Payment",
           "enum": ["Payment"]
         },
         "id": {
@@ -32,6 +35,7 @@
         },
         "version": {
           "type": "integer",
+          "default": 0,
           "format": "int32"
         },
         "organisation_id": {
@@ -41,10 +45,38 @@
         "attributes": {
           "$ref": "#/definitions/PaymentAttributes"
         }
+      },
+      "example": {
+        "type": "Payment",
+        "id": "216d4da9-e59a-4cc6-8df3-3da6e7580b77",
+        "version": 0,
+        "organisation_id": "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",
+        "attributes": {
+          "$ref": "#/definitions/PaymentAttributes/example"
+        }
       }
     },
     "PaymentAttributes": {
       "type": "object",
+      "description": "Details of a payment.",
+      "required": [
+        "amount",
+        "beneficiary_party",
+        "charges_information",
+        "currency",
+        "debtor_party",
+        "end_to_end_reference",
+        "numeric_reference",
+        "payment_id",
+        "payment_purpose",
+        "payment_scheme",
+        "payment_type",
+        "processing_date",
+        "reference",
+        "scheme_payment_sub_type",
+        "scheme_payment_type",
+        "sponsor_party"
+      ],
       "properties": {
         "amount": {
           "type": "string",
@@ -54,7 +86,7 @@
           "$ref": "#/definitions/Party"
         },
         "charges_information": {
-          "$ref": "#/definitions/AggregateCharge"
+          "$ref": "#/definitions/Charges"
         },
         "currency": {
           "type": "string"
@@ -101,10 +133,41 @@
         "sponsor_party": {
           "$ref": "#/definitions/Party"
         }
+      },
+      "example": {
+        "amount": "100.21",
+        "beneficiary_party": {
+          "$ref": "#/definitions/Party/example"
+        },
+        "charges_information": {
+          "$ref": "#/definitions/Charges/example"
+        },
+        "currency": "GBP",
+        "debtor_party": {
+          "$ref": "#/definitions/Party/example"
+        },
+        "end_to_end_reference": "Wil piano Jan",
+        "fx": {
+          "$ref": "#/definitions/CurrencyExchange/example"
+        },
+        "numeric_reference": "1002001",
+        "payment_id": "123456789012345678",
+        "payment_purpose": "Paying for goods/services",
+        "payment_scheme": "FPS",
+        "payment_type": "Credit",
+        "processing_date": "2017-01-18",
+        "reference": "Payment for Em's piano lessons",
+        "scheme_payment_sub_type": "InternetBanking",
+        "scheme_payment_type": "ImmediatePayment",
+        "sponsor_party": {
+          "$ref": "#/definitions/Party/example"
+        }
       }
     },
     "Party": {
       "type": "object",
+      "description": "A real-life entity capable of making and receiving payments.",
+      "required": ["account_number", "bank_id", "bank_id_code"],
       "properties": {
         "account_name": {
           "type": "string"
@@ -131,10 +194,22 @@
         "name": {
           "type": "string"
         }
+      },
+      "example": {
+        "account_name": "W Owens",
+        "account_number": "31926819",
+        "account_number_code": "BBAN",
+        "account_type": 0,
+        "address": "1 The Beneficiary Localtown SE2",
+        "bank_id": "403000",
+        "bank_id_code": "GBDSC",
+        "name": "Wilfred Jeremiah Owens"
       }
     },
-    "Charge": {
+    "Money": {
       "type": "object",
+      "description": "Makes the world go round.",
+      "required": ["amount", "currency"],
       "properties": {
         "amount": {
           "type": "string",
@@ -143,10 +218,21 @@
         "currency": {
           "type": "string"
         }
+      },
+      "example": {
+        "amount": "5.00",
+        "currency": "GBP"
       }
     },
-    "AggregateCharge": {
+    "Charges": {
       "type": "object",
+      "description": "A list of monies to be deducted from somewhere.",
+      "required": [
+        "bearer_code",
+        "sender_charges",
+        "receiver_charges_amount",
+        "receiver_charges_currency"
+      ],
       "properties": {
         "bearer_code": {
           "type": "string"
@@ -154,7 +240,7 @@
         "sender_charges": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Charge"
+            "$ref": "#/definitions/Money"
           }
         },
         "receiver_charges_amount": {
@@ -164,10 +250,32 @@
         "receiver_charges_currency": {
           "type": "string"
         }
+      },
+      "example": {
+        "bearer_code": "SHAR",
+        "sender_charges": [
+          {
+            "amount": "5.00",
+            "currency": "GBP"
+          },
+          {
+            "amount": "10.00",
+            "currency": "GBP"
+          }
+        ],
+        "receiver_charges_amount": "1.00",
+        "receiver_charges_currency": "USD"
       }
     },
     "CurrencyExchange": {
       "type": "object",
+      "description": "An amount being exchanged from a given currency.",
+      "required": [
+        "contract_reference",
+        "exchange_rate",
+        "original_amount",
+        "original_currency"
+      ],
       "properties": {
         "contract_reference": {
           "type": "string"
@@ -182,6 +290,12 @@
         "original_currency": {
           "type": "string"
         }
+      },
+      "example": {
+        "contract_reference": "FX123",
+        "exchange_rate": "2.00000",
+        "original_amount": "200.42",
+        "original_currency": "USD"
       }
     }
   }
