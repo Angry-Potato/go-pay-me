@@ -3,7 +3,7 @@
   "info": {
     "title": "Payments",
     "description": "This is a payments API design.",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "contact": {
       "name": "Liam Humphreys",
       "url": "https://github.com/Angry-Potato"
@@ -17,5 +17,172 @@
   "basePath": "/",
   "schemes": ["http"],
   "consumes": ["application/json"],
-  "produces": ["application/json"]
+  "produces": ["application/json"],
+  "definitions": {
+    "Payment": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["Payment"]
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "version": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "organisation_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "attributes": {
+          "$ref": "#/definitions/PaymentAttributes"
+        }
+      }
+    },
+    "PaymentAttributes": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "string",
+          "format": "money"
+        },
+        "beneficiary_party": {
+          "$ref": "#/definitions/Party"
+        },
+        "charges_information": {
+          "$ref": "#/definitions/AggregateCharge"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "debtor_party": {
+          "$ref": "#/definitions/Party"
+        },
+        "end_to_end_reference": {
+          "type": "string"
+        },
+        "fx": {
+          "$ref": "#/definitions/CurrencyExchange"
+        },
+        "numeric_reference": {
+          "type": "string"
+        },
+        "payment_id": {
+          "type": "string"
+        },
+        "payment_purpose": {
+          "type": "string"
+        },
+        "payment_scheme": {
+          "type": "string"
+        },
+        "payment_type": {
+          "type": "string",
+          "enum": ["Credit"]
+        },
+        "processing_date": {
+          "type": "string"
+        },
+        "reference": {
+          "type": "string"
+        },
+        "scheme_payment_sub_type": {
+          "type": "string",
+          "enum": ["InternetBanking"]
+        },
+        "scheme_payment_type": {
+          "type": "string",
+          "enum": ["ImmediatePayment"]
+        },
+        "sponsor_party": {
+          "$ref": "#/definitions/Party"
+        }
+      }
+    },
+    "Party": {
+      "type": "object",
+      "properties": {
+        "account_name": {
+          "type": "string"
+        },
+        "account_number": {
+          "type": "string"
+        },
+        "account_number_code": {
+          "type": "string"
+        },
+        "account_type": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "address": {
+          "type": "string"
+        },
+        "bank_id": {
+          "type": "string"
+        },
+        "bank_id_code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "Charge": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "string",
+          "format": "money"
+        },
+        "currency": {
+          "type": "string"
+        }
+      }
+    },
+    "AggregateCharge": {
+      "type": "object",
+      "properties": {
+        "bearer_code": {
+          "type": "string"
+        },
+        "sender_charges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Charge"
+          }
+        },
+        "receiver_charges_amount": {
+          "type": "string",
+          "format": "money"
+        },
+        "receiver_charges_currency": {
+          "type": "string"
+        }
+      }
+    },
+    "CurrencyExchange": {
+      "type": "object",
+      "properties": {
+        "contract_reference": {
+          "type": "string"
+        },
+        "exchange_rate": {
+          "type": "string"
+        },
+        "original_amount": {
+          "type": "string",
+          "format": "money"
+        },
+        "original_currency": {
+          "type": "string"
+        }
+      }
+    }
+  }
 }
