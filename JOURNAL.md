@@ -31,3 +31,7 @@ After looking in more detail at Protobuf, and Pact, it still looks like a swagge
 It looks like it's possible to generate a swagger JSON file from scratch, then convert this file to AsciiDoc, and convert _that_ file to PDF.
 
 Spent some time testing, writing, and documenting a simple script tool that will convert a swagger JSON file to a PDF. The tool is dockerised for convenience. I just need to write a swagger file based on the given example payments list, and the PDF is taken care of!
+
+## 11th May
+
+Going to write the swagger file this morning, and look at possible GUI design tools.
