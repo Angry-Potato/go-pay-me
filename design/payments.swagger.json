@@ -1,0 +1,16 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Payments",
+    "description": "This is a payments API design.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Liam Humphreys",
+      "url": "https://github.com/Angry-Potato"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://raw.githubusercontent.com/Angry-Potato/go-pay-me/master/LICENSE"
+    }
+  }
+}
