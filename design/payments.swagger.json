@@ -3,7 +3,7 @@
   "info": {
     "title": "Payments",
     "description": "This is a payments API design.",
-    "version": "3.0.0",
+    "version": "3.1.0",
     "contact": {
       "name": "Liam Humphreys",
       "url": "https://github.com/Angry-Potato"
@@ -296,6 +296,39 @@
         "exchange_rate": "2.00000",
         "original_amount": "200.42",
         "original_currency": "USD"
+      }
+    }
+  },
+  "paths": {
+    "/payments": {
+      "post": {
+        "summary": "Create new payment.",
+        "description": "Creates a new payment resource, and all of its' sub-resources.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Payment resource that needs to be added to the service",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Payment"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/Payment"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       }
     }
   }
