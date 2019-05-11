@@ -3,7 +3,7 @@
   "info": {
     "title": "Payments",
     "description": "This is a payments API design.",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "contact": {
       "name": "Liam Humphreys",
       "url": "https://github.com/Angry-Potato"
@@ -12,5 +12,10 @@
       "name": "MIT",
       "url": "https://raw.githubusercontent.com/Angry-Potato/go-pay-me/master/LICENSE"
     }
-  }
+  },
+  "host": "localhost",
+  "basePath": "/",
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"]
 }
