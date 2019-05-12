@@ -2,13 +2,28 @@ package web
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 
+	"github.com/Angry-Potato/go-pay-me/implementation/db"
 	"github.com/ant0ine/go-json-rest/rest"
 )
 
 // StartServer starts the server
 func StartServer(port int) error {
+	_, err := db.Connect(
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_NAME"),
+	)
+
+	if err != nil {
+		return err
+	}
+
 	api := rest.NewApi()
 	statusMw := &rest.StatusMiddleware{}
 	api.Use(statusMw)
@@ -26,7 +41,9 @@ func StartServer(port int) error {
 
 	api.SetApp(router)
 
-	return http.ListenAndServe(serverPort(port), api.MakeHandler())
+	listenPort := serverPort(port)
+	log.Printf("Listening on port %s", listenPort)
+	return http.ListenAndServe(listenPort, api.MakeHandler())
 }
 
 func serverPort(port int) string {

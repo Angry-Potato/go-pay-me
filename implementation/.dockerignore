@@ -10,3 +10,4 @@ Godeps/
 implementation
 Dockerfile
 app
+docker-compose*

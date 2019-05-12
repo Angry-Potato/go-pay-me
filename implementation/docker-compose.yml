@@ -4,8 +4,15 @@ services:
     build:
       context: .
       target: prod
+    entrypoint: /bin/bash
+    command: -c "/wait-for.sh postgres:5432 -t 10 -- /app"
     environment:
       - PORT=8000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=payments
     expose:
       - 8000
     links:
