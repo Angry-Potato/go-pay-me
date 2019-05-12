@@ -3,7 +3,7 @@
   "info": {
     "title": "Payments",
     "description": "This is a payments API design.",
-    "version": "3.5.0",
+    "version": "3.6.0",
     "contact": {
       "name": "Liam Humphreys",
       "url": "https://github.com/Angry-Potato"
@@ -421,6 +421,49 @@
             "schema": {
               "$ref": "#/definitions/Payment"
             }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update payment.",
+        "description": "Updates a payment with new information.",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "in": "path",
+            "description": "ID of payment to return",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Updated payment",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Payment"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Payment"
+            }
+          },
+          "304": {
+            "description": "Not Modified"
           },
           "400": {
             "description": "Bad Request"
