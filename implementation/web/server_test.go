@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestPort(t *testing.T) {
+func TestServerPort(t *testing.T) {
 	port := 1000
 	got := serverPort(port)
 	want := fmt.Sprintf(":%d", port)
