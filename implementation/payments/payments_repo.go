@@ -1,11 +1,19 @@
 package payments
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/jinzhu/gorm"
 )
+
+// ValidationError describes the incorrectness of a payment operation
+type ValidationError struct {
+	err string
+}
+
+func (e *ValidationError) Error() string {
+	return e.err
+}
 
 // All payments
 func All(DB *gorm.DB) ([]Payment, error) {
@@ -28,5 +36,5 @@ func Create(DB *gorm.DB, payment *Payment) (*Payment, error) {
 	for _, validationError := range validationErrors {
 		errstrings = append(errstrings, validationError.Error())
 	}
-	return nil, fmt.Errorf(strings.Join(errstrings, ", "))
+	return nil, &ValidationError{strings.Join(errstrings, ", ")}
 }

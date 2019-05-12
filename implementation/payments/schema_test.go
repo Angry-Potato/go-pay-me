@@ -3,15 +3,16 @@ package payments
 import (
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
 func validPayment() *Payment {
 	return &Payment{
-		ID:             "4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43",
+		ID:             uuid.New().String(),
 		Type:           "Payment",
 		Version:        0,
-		OrganisationID: "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",
+		OrganisationID: uuid.New().String(),
 	}
 }
 

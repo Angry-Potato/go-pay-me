@@ -21,6 +21,7 @@ func StartServer(port int, DB *gorm.DB) error {
 			w.WriteJson(statusMw.GetStatus())
 		}),
 		rest.Get("/payments", AllPayments(DB)),
+		rest.Post("/payments", CreatePayment(DB)),
 	)
 
 	if err != nil {

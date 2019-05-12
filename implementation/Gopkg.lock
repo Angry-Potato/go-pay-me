@@ -21,6 +21,14 @@
   version = "v1.1.1"
 
 [[projects]]
+  digest = "1:582b704bebaa06b48c29b0cec224a6058a09c86883aaddabde889cd1a5f73e1b"
+  name = "github.com/google/uuid"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "0cd6bf5da1e1c83f8b45653022c74f71af0538a4"
+  version = "v1.1.1"
+
+[[projects]]
   digest = "1:94845588f4062c90f327551b2a50262fae846d1a65beba8058efbdbaaaca7f9e"
   name = "github.com/jinzhu/gorm"
   packages = [
@@ -117,6 +125,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/ant0ine/go-json-rest/rest",
+    "github.com/google/uuid",
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/postgres",
     "github.com/stretchr/testify/assert",
