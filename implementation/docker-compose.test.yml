@@ -8,5 +8,11 @@ services:
       - FULL_STACK_TEST=true
       - API_HOST=go-pay-me
       - API_PORT=8000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=payments
     links:
       - go-pay-me
+      - postgres
