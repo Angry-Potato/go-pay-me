@@ -19,5 +19,5 @@ func Test_All_Payments_Returns_Successfully(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 200, resp.StatusCode())
 	assert.NotEmpty(t, resp.String())
-	assert.Equal(t, []payments.Payment{}, allPayments)
+	assert.IsType(t, []payments.Payment{}, allPayments)
 }
