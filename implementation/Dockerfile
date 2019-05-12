@@ -25,3 +25,4 @@ RUN go build -o app && mv app /app
 FROM scratch as prod
 COPY --from=builder /app /app
 ENTRYPOINT [ "/app" ]
+CMD [ "" ]
