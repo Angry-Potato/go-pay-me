@@ -24,6 +24,6 @@ script:
 
 deploy:
   provider: script
-  script: docker push ${HEROKU_IMAGE} && heroku container:web release --app ${HEROKU_APP_NAME}
+  script: docker push ${HEROKU_IMAGE} && heroku container:release --app ${HEROKU_APP_NAME}
   on:
     branch: master
