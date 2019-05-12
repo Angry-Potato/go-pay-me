@@ -1,14 +1,13 @@
 language: go
 
-go:
-  - 1.12.5
-
-install:
-  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+services:
+  - docker
 
 before_script:
-  - cd implementation && dep ensure
+  - env
+  - cd implementation
+  - docker build -t go-pay-me:test --target test --pull .
+  - docker build -t go-pay-me:prod --target prod --pull .
 
 script:
-  - pwd
-  - go test ./...
+  - docker run --rm go-pay-me:test
