@@ -39,3 +39,5 @@ Going to write the swagger file this morning, and look at possible GUI design to
 ## 12th May
 
 Should get the swagger file finished this morning, should have finished yesterday but it took longer than expected to learn the structure.
+
+Pretty happy with the finished swagger file, it meets all of the requirements in the brief. The bulk update and bulk delete are not specified in the brief but I decided to keep them anyway to demonstrate my understanding of a RESTful API.
