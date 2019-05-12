@@ -4,27 +4,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
-	"github.com/Angry-Potato/go-pay-me/implementation/db"
 	"github.com/ant0ine/go-json-rest/rest"
+	"github.com/jinzhu/gorm"
 )
 
 // StartServer starts the server
-func StartServer(port int) error {
-	_, err := db.Connect(
-		os.Getenv("DATABASE_URL"),
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_NAME"),
-	)
-
-	if err != nil {
-		return err
-	}
-
+func StartServer(port int, DB *gorm.DB) error {
 	api := rest.NewApi()
 	statusMw := &rest.StatusMiddleware{}
 	api.Use(statusMw)
