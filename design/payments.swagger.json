@@ -2,8 +2,8 @@
   "swagger": "2.0",
   "info": {
     "title": "Payments",
-    "description": "This is a payments API design.",
-    "version": "3.7.1",
+    "description": "This is a payments API design. The API will utilise the [go-json-rest](https://github.com/ant0ine/go-json-rest) web framework backed by [gorm](https://github.com/jinzhu/gorm), connecting to a [postgres](https://www.postgresql.org/) database.",
+    "version": "3.7.2",
     "contact": {
       "name": "Liam Humphreys",
       "url": "https://github.com/Angry-Potato"

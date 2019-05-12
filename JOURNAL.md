@@ -41,3 +41,7 @@ Going to write the swagger file this morning, and look at possible GUI design to
 Should get the swagger file finished this morning, should have finished yesterday but it took longer than expected to learn the structure.
 
 Pretty happy with the finished swagger file, it meets all of the requirements in the brief. The bulk update and bulk delete are not specified in the brief but I decided to keep them anyway to demonstrate my understanding of a RESTful API.
+
+I noticed that the API design spec in the brief talks about more than just the REST interface. This leads me to believe I should add the tech choices to the design file.
+
+I've looked at many Golang web frameworks, and landed on [go-json-rest](https://github.com/ant0ine/go-json-rest) backed by [gorm](https://github.com/jinzhu/gorm) connecting to a [postgres](https://www.postgresql.org/) database. The reasoning behind these choices is largely to do with ease of use (though I've never used them before, the documentation is high quality) which hopefully leads to speedy development. In addition, I was looking for libraries / frameworks that were very popular (github stars!) as this is usually a sign of a good library / framework, and it also means issues are likely to be more google-able.
