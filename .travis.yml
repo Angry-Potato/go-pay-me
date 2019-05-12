@@ -3,11 +3,13 @@ language: go
 services:
   - docker
 
+env:
+  - IMAGE=go-pay-me
+
 before_script:
-  - env
   - cd implementation
-  - docker build -t go-pay-me:test --target test --pull .
-  - docker build -t go-pay-me:prod --target prod --pull .
+  - docker build -t ${IMAGE}:test --target test --pull .
+  - docker build -t ${IMAGE}:prod --target prod --pull .
 
 script:
-  - docker run --rm go-pay-me:test
+  - docker run --rm ${IMAGE}:test
