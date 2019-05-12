@@ -13,6 +13,7 @@ import (
 // StartServer starts the server
 func StartServer(port int) error {
 	_, err := db.Connect(
+		os.Getenv("DATABASE_URL"),
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_PORT"),
 		os.Getenv("DB_USER"),

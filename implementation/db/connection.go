@@ -9,12 +9,15 @@ import (
 )
 
 // Connect to Postgres database
-func Connect(host, port, user, password, database string) (*gorm.DB, error) {
-	db, err := gorm.Open("postgres", connectionString(host, port, user, password, database))
+func Connect(url, host, port, user, password, database string) (*gorm.DB, error) {
+	db, err := gorm.Open("postgres", connectionString(url, host, port, user, password, database))
 
 	return db, err
 }
 
-func connectionString(host, port, user, password, database string) string {
+func connectionString(url, host, port, user, password, database string) string {
+	if url != "" {
+		return url
+	}
 	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, database)
 }
