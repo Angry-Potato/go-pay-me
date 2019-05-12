@@ -3,14 +3,14 @@ package web
 import (
 	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestServerPort(t *testing.T) {
+func Test_ServerPort_Returns_Colon_Prefixed_Port_String(t *testing.T) {
 	port := 1000
-	got := serverPort(port)
-	want := fmt.Sprintf(":%d", port)
+	actual := serverPort(port)
+	expected := fmt.Sprintf(":%d", port)
 
-	if got != want {
-		t.Errorf("serverPort(%d) = %s; want %s", port, got, want)
-	}
+	assert.Equal(t, expected, actual)
 }

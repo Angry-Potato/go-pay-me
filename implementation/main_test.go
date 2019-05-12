@@ -3,24 +3,22 @@ package main
 import (
 	"strconv"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestDefaultPort(t *testing.T) {
+func Test_Port_Returns_DefaultPort_When_EnvPort_Is_Empty(t *testing.T) {
 	defaultPort := 1000
-	got := port("", defaultPort)
-	want := defaultPort
+	actual := port("", defaultPort)
+	expected := defaultPort
 
-	if got != want {
-		t.Errorf("port(\"\", %d) = %d; want %d", defaultPort, got, want)
-	}
+	assert.Equal(t, expected, actual)
 }
 
-func TestEnvironmentPort(t *testing.T) {
+func Test_Port_Returns_EnvPort_When_EnvPort_Is_Not_Empty(t *testing.T) {
 	envPort, defaultPort := "8080", 1000
-	got := port(envPort, defaultPort)
-	want, _ := strconv.Atoi(envPort)
+	actual := port(envPort, defaultPort)
+	expected, _ := strconv.Atoi(envPort)
 
-	if got != want {
-		t.Errorf("port(%s, %d) = %d; want %d", envPort, defaultPort, got, want)
-	}
+	assert.Equal(t, expected, actual)
 }
