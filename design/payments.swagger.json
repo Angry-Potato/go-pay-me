@@ -3,7 +3,7 @@
   "info": {
     "title": "Payments",
     "description": "This is a payments API design.",
-    "version": "3.4.0",
+    "version": "3.5.0",
     "contact": {
       "name": "Liam Humphreys",
       "url": "https://github.com/Angry-Potato"
@@ -303,12 +303,12 @@
     "/payments": {
       "post": {
         "summary": "Create new payment.",
-        "description": "Creates a new payment resource, and all of its' sub-resources.",
+        "description": "Creates a new payment, and all of its' sub-resources.",
         "parameters": [
           {
             "in": "body",
             "name": "body",
-            "description": "Payment resource that needs to be added to the service",
+            "description": "Payment that needs to be added to the service",
             "required": true,
             "schema": {
               "$ref": "#/definitions/Payment"
@@ -332,7 +332,7 @@
       },
       "get": {
         "summary": "List all payments.",
-        "description": "Lists all payment resources.",
+        "description": "Lists all payments.",
         "parameters": [],
         "responses": {
           "200": {
@@ -351,12 +351,12 @@
       },
       "put": {
         "summary": "Bulk update payments.",
-        "description": "Bulk updates payment resources, as well as all their sub-resources.",
+        "description": "Bulk updates payments, as well as all their sub-resources.",
         "parameters": [
           {
             "in": "body",
             "name": "body",
-            "description": "Payment resources to be updated.",
+            "description": "Payments to be updated.",
             "required": true,
             "schema": {
               "type": "array",
@@ -389,11 +389,44 @@
       },
       "delete": {
         "summary": "Delete all payments.",
-        "description": "Deletes all payment resources, and their sub-resources.",
+        "description": "Deletes all payments, and their sub-resources.",
         "parameters": [],
         "responses": {
           "200": {
             "description": "Success"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/payments/{paymentId}": {
+      "get": {
+        "summary": "Find payment by ID.",
+        "description": "Returns a single payment",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "in": "path",
+            "description": "ID of payment to return",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Payment"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not found"
           },
           "500": {
             "description": "Internal Server Error"

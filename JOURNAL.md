@@ -35,3 +35,7 @@ Spent some time testing, writing, and documenting a simple script tool that will
 ## 11th May
 
 Going to write the swagger file this morning, and look at possible GUI design tools.
+
+## 12th May
+
+Should get the swagger file finished this morning, should have finished yesterday but it took longer than expected to learn the structure.
