@@ -10,4 +10,5 @@ before_script:
   - cd implementation && dep ensure
 
 script:
+  - pwd
   - go test ./...
