@@ -1,4 +1,4 @@
-package web
+package testhelpers
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 	"testing"
 )
 
+// FullStackTest skips the test if env var FULL_STACK_TEST != true
 func FullStackTest(t *testing.T) {
 	t.Helper()
 
@@ -14,6 +15,7 @@ func FullStackTest(t *testing.T) {
 	}
 }
 
+// APIAddress returns http address of the API under test, populated by env vars API_HOST and API_PORT
 func APIAddress(t *testing.T) string {
 	t.Helper()
 
