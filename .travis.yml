@@ -4,9 +4,10 @@ services:
   - docker
 
 env:
-  - IMAGE=go-pay-me
-  - HEROKU_APP_NAME=go-pay-me
-  - HEROKU_IMAGE=registry.heroku.com/go-pay-me/web
+  global:
+    - IMAGE=go-pay-me
+    - HEROKU_APP_NAME=go-pay-me
+    - HEROKU_IMAGE=registry.heroku.com/go-pay-me/web
 
 before_install:
   - wget -qO- https://toolbelt.heroku.com/install.sh | sh
