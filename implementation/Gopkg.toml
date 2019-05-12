@@ -28,3 +28,7 @@
 [prune]
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  name = "github.com/ant0ine/go-json-rest"
+  version = "3.3.2"

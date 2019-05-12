@@ -2,8 +2,10 @@ package main
 
 import (
 	"log"
+
+	"github.com/Angry-Potato/go-pay-me/implementation/web"
 )
 
 func main() {
-	log.Println("Show me the money!")
+	log.Fatal(web.StartServer())
 }

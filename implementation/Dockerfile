@@ -11,6 +11,7 @@ RUN dep ensure
 
 
 FROM base as builder
+ENV CGO_ENABLED=0
 RUN go build -o app && mv app /app
 
 

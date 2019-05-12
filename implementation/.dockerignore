@@ -8,3 +8,5 @@
 vendor/
 Godeps/
 implementation
+Dockerfile
+app
