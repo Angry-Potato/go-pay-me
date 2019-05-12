@@ -5,11 +5,24 @@ services:
 
 env:
   - IMAGE=go-pay-me
+  - HEROKU_APP_NAME=go-pay-me
+  - HEROKU_IMAGE=registry.heroku.com/go-pay-me/web
+
+before_install:
+  - wget -qO- https://toolbelt.heroku.com/install.sh | sh
+  - echo ${HEROKU_PASSWORD} | docker login -u _ --password-stdin registry.heroku.com
 
 before_script:
   - cd implementation
-  - docker build -t ${IMAGE}:test --target test --pull .
-  - docker build -t ${IMAGE}:prod --target prod --pull .
 
 script:
+  - docker build -t ${IMAGE}:test --target test --pull .
   - docker run --rm ${IMAGE}:test
+  - docker build -t ${IMAGE}:prod --target prod --pull .
+  - docker tag ${IMAGE}:prod ${HEROKU_IMAGE}
+
+deploy:
+  provider: script
+  script: docker push ${HEROKU_IMAGE} && heroku container:web release --app ${HEROKU_APP_NAME}
+  on:
+    branch: master
