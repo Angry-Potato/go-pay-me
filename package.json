@@ -1,0 +1,11 @@
+{
+  "name": "go-pay-me",
+  "version": "1.0.0",
+  "description": "Initialised as an npm package for easy Github-pages generation.",
+  "scripts": {
+    "regen-docs": "spectacle -t docs design/payments.swagger.json"
+  },
+  "dependencies": {
+    "spectacle-docs": "^1.0.7"
+  }
+}

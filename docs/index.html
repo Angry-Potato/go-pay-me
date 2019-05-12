@@ -1,0 +1,1406 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payments | API Reference</title>
+    <link rel="stylesheet" href="stylesheets/foundation.min.css" />
+    <link rel="stylesheet" href="stylesheets/spectacle.min.css" />
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <!-- <script src="javascripts/foundation.js"></script> -->
+    <script src="javascripts/spectacle.min.js"></script>
+  </head>
+  <body id="spectacle">
+    <div id="page" class="drawer-layout drawer-slide-right-large">
+      <div id="sidebar">
+        <button class="close-button" aria-label="Close menu" type="button" data-drawer-close>
+          <span aria-hidden="true">×</span>
+        </button>
+        <nav id="nav" role="navigation">
+          <h5>Topics</h5>
+          <a href="#introduction">Introduction</a>
+          <h5>Paths</h5>
+          <!-- <section>
+                <a href="#path--payments">/payments</a>
+                <ul> -->
+          <!-- <li> -->
+          <a href="#operation--payments-post"> Create new payment. </a>
+          <!-- </li> -->
+          <!-- <li> -->
+          <a href="#operation--payments-get"> List all payments. </a>
+          <!-- </li> -->
+          <!-- <li> -->
+          <a href="#operation--payments-put"> Bulk update payments. </a>
+          <!-- </li> -->
+          <!-- <li> -->
+          <a href="#operation--payments-delete"> Delete all payments. </a>
+          <!-- </li> -->
+          <!-- </ul>
+              </section> -->
+          <!-- <section>
+                <a href="#path--payments--paymentId-">/payments/{paymentId}</a>
+                <ul> -->
+          <!-- <li> -->
+          <a href="#operation--payments--paymentId--get"> Find payment by ID. </a>
+          <!-- </li> -->
+          <!-- <li> -->
+          <a href="#operation--payments--paymentId--put"> Update payment. </a>
+          <!-- </li> -->
+          <!-- <li> -->
+          <a href="#operation--payments--paymentId--delete"> Delete a payment. </a>
+          <!-- </li> -->
+          <!-- </ul>
+              </section> -->
+          <h5>Schema Definitions</h5>
+          <a href="#definition-Payment"> Payment </a>
+          <a href="#definition-PaymentAttributes"> PaymentAttributes </a>
+          <a href="#definition-Party"> Party </a>
+          <a href="#definition-Money"> Money </a>
+          <a href="#definition-Charges"> Charges </a>
+          <a href="#definition-CurrencyExchange"> CurrencyExchange </a>
+        </nav>
+      </div>
+      <div id="docs" class="row collapse expanded drawer" data-drawer>
+        <button class="floating-menu-icon" type="button" data-drawer-slide="right">
+          <span class="hamburger"></span>
+        </button>
+        <div class="example-box doc-content"></div>
+        <article>
+          <h1 class="doc-title">Payments
+            <span>API Reference</span>
+          </h1>
+          <div id="introduction" data-traverse-target="introduction">
+            <div class="doc-row">
+              <div class="doc-copy">
+                <p>This is a payments API design. The API will utilise the
+                  <a href="https://github.com/ant0ine/go-json-rest">go-json-rest</a> web framework backed by
+                  <a href="https://github.com/jinzhu/gorm">gorm</a>, connecting to a
+                  <a href="https://www.postgresql.org/">postgres</a> database.</p>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>API Endpoint</h5>
+                  <!-- <div class="hljs"> --><pre><code>http://localhost/</code></pre>
+                  <!-- </div> -->
+                  <h5>Request Content-Types:
+                    <span>application/json</span>
+                  </h5>
+                  <h5>Response Content-Types:
+                    <span>application/json</span>
+                  </h5>
+                  <h5>Schemes:
+                    <span>http</span>
+                  </h5>
+                  <h5>Version:
+                    <span>3.7.2</span>
+                  </h5>
+                </section>
+              </div>
+            </div>
+          </div>
+          <h1>Paths</h1>
+          <span id="path--payments"></span>
+          <div id="operation--payments-post" class="operation panel" data-traverse-target="operation--payments-post">
+            <h2 class="operation-title">
+              <span class="operation-summary">Create new payment.</span>
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-path">
+                  <span class="operation-method">POST</span>
+                  <span class="operation-path">/payments</span>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-description">
+                  <p>Creates a new payment, and all of its&#39; sub-resources.</p>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-request-body">
+                  <div class="prop-row">
+                    <div class="prop-name">
+                      <div class="swagger-request-model">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/Payment">Payment</a>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="prop-value columns small-6">
+                      <!-- <div class="swagger-request-description"> -->
+                      <p>Payment that needs to be added to the service</p>
+                      <!-- </div> -->
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Request Example</h5>
+                  <!-- <div class="hljs"> -->
+                  <html>
+                  <head></head>
+                  <body><pre><code class="hljs language-json">{
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Payment&quot;</span>,
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;216d4da9-e59a-4cc6-8df3-3da6e7580b77&quot;</span>,
+  <span class="hljs-attr">&quot;version&quot;</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attr">&quot;organisation_id&quot;</span>: <span class="hljs-string">&quot;743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb&quot;</span>,
+  <span class="hljs-attr">&quot;attributes&quot;</span>: {
+    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-PaymentAttributes/example">&quot;#/definitions/PaymentAttributes/example&quot;</a></span>
+  }
+}
+</code></pre> </body>
+                  </html>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-responses">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">201 Created</div>
+                      <div class="prop-ref">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/Payment">Payment</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
+                    </div>
+                    <div class="prop-value">
+                      <p>Created</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">400 Bad Request</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Bad Request</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">500 Internal Server Error</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Internal Server Error</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Response Example
+                    <span>(201 Created)</span>
+                  </h5>
+                  <!-- <div class="hljs"> -->
+                  <html>
+                  <head></head>
+                  <body><pre><code class="hljs language-json">{
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Payment&quot;</span>,
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;216d4da9-e59a-4cc6-8df3-3da6e7580b77&quot;</span>,
+  <span class="hljs-attr">&quot;version&quot;</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attr">&quot;organisation_id&quot;</span>: <span class="hljs-string">&quot;743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb&quot;</span>,
+  <span class="hljs-attr">&quot;attributes&quot;</span>: {
+    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-PaymentAttributes/example">&quot;#/definitions/PaymentAttributes/example&quot;</a></span>
+  }
+}
+</code></pre> </body>
+                  </html>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="operation--payments-get" class="operation panel" data-traverse-target="operation--payments-get">
+            <h2 class="operation-title">
+              <span class="operation-summary">List all payments.</span>
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-path">
+                  <span class="operation-method">GET</span>
+                  <span class="operation-path">/payments</span>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-description">
+                  <p>Lists all payments.</p>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy"> </div>
+              <div class="doc-examples"></div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-responses">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">200 OK</div>
+                      <div class="prop-ref">
+                        <span class="json-schema-ref-array">
+                          <a class="json-schema-ref" href="#/definitions/Payment">Payment</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
+                    </div>
+                    <div class="prop-value">
+                      <p>Success</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-inner">
+                    <div class="prop-name">type</div>
+                    <div class="prop-value">
+                      <span class="json-property-type">
+                        <span class="json-schema-ref-array">
+                          <a class="json-schema-ref" href="#/definitions/Payment">Payment</a>
+                        </span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">500 Internal Server Error</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Internal Server Error</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Response Example
+                    <span>(200 OK)</span>
+                  </h5>
+                  <!-- <div class="hljs"> -->
+                  <html>
+                  <head></head>
+                  <body><pre><code class="hljs language-json">[
+  {
+    <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Payment&quot;</span>,
+    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;216d4da9-e59a-4cc6-8df3-3da6e7580b77&quot;</span>,
+    <span class="hljs-attr">&quot;version&quot;</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">&quot;organisation_id&quot;</span>: <span class="hljs-string">&quot;743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb&quot;</span>,
+    <span class="hljs-attr">&quot;attributes&quot;</span>: {
+      <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-PaymentAttributes/example">&quot;#/definitions/PaymentAttributes/example&quot;</a></span>
+    }
+  }
+]
+</code></pre> </body>
+                  </html>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="operation--payments-put" class="operation panel" data-traverse-target="operation--payments-put">
+            <h2 class="operation-title">
+              <span class="operation-summary">Bulk update payments.</span>
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-path">
+                  <span class="operation-method">PUT</span>
+                  <span class="operation-path">/payments</span>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-description">
+                  <p>Bulk updates payments, as well as all their sub-resources.</p>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-request-body">
+                  <p>Payments to be updated.</p>
+                  <section class="json-schema-array-items">
+                    <span class="json-property-type">
+                      <span class="">
+                        <a class="json-schema-ref" href="#/definitions/Payment">Payment</a>
+                      </span>
+                    </span>
+                    <span class="json-property-range" title="Value limits"></span>
+                    <div class="json-inner-schema"> </div>
+                  </section>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Request Example</h5>
+                  <!-- <div class="hljs"> -->
+                  <html>
+                  <head></head>
+                  <body><pre><code class="hljs language-json">[
+  {
+    <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Payment&quot;</span>,
+    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;216d4da9-e59a-4cc6-8df3-3da6e7580b77&quot;</span>,
+    <span class="hljs-attr">&quot;version&quot;</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">&quot;organisation_id&quot;</span>: <span class="hljs-string">&quot;743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb&quot;</span>,
+    <span class="hljs-attr">&quot;attributes&quot;</span>: {
+      <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-PaymentAttributes/example">&quot;#/definitions/PaymentAttributes/example&quot;</a></span>
+    }
+  }
+]
+</code></pre> </body>
+                  </html>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-responses">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">200 OK</div>
+                      <div class="prop-ref">
+                        <span class="json-schema-ref-array">
+                          <a class="json-schema-ref" href="#/definitions/Payment">Payment</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
+                    </div>
+                    <div class="prop-value">
+                      <p>Success</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-inner">
+                    <div class="prop-name">type</div>
+                    <div class="prop-value">
+                      <span class="json-property-type">
+                        <span class="json-schema-ref-array">
+                          <a class="json-schema-ref" href="#/definitions/Payment">Payment</a>
+                        </span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">304 Not Modified</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Not Modified</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">400 Bad Request</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Bad Request</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">500 Internal Server Error</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Internal Server Error</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Response Example
+                    <span>(200 OK)</span>
+                  </h5>
+                  <!-- <div class="hljs"> -->
+                  <html>
+                  <head></head>
+                  <body><pre><code class="hljs language-json">[
+  {
+    <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Payment&quot;</span>,
+    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;216d4da9-e59a-4cc6-8df3-3da6e7580b77&quot;</span>,
+    <span class="hljs-attr">&quot;version&quot;</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">&quot;organisation_id&quot;</span>: <span class="hljs-string">&quot;743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb&quot;</span>,
+    <span class="hljs-attr">&quot;attributes&quot;</span>: {
+      <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-PaymentAttributes/example">&quot;#/definitions/PaymentAttributes/example&quot;</a></span>
+    }
+  }
+]
+</code></pre> </body>
+                  </html>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="operation--payments-delete" class="operation panel" data-traverse-target="operation--payments-delete">
+            <h2 class="operation-title">
+              <span class="operation-summary">Delete all payments.</span>
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-path">
+                  <span class="operation-method">DELETE</span>
+                  <span class="operation-path">/payments</span>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-description">
+                  <p>Deletes all payments, and their sub-resources.</p>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy"> </div>
+              <div class="doc-examples"></div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-responses">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">200 OK</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Success</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">500 Internal Server Error</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Internal Server Error</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples"> </div>
+            </div>
+          </div>
+          <span id="path--payments--paymentId-"></span>
+          <div id="operation--payments--paymentId--get" class="operation panel" data-traverse-target="operation--payments--paymentId--get">
+            <h2 class="operation-title">
+              <span class="operation-summary">Find payment by ID.</span>
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-path">
+                  <span class="operation-method">GET</span>
+                  <span class="operation-path">/payments/{paymentId}</span>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-description">
+                  <p>Returns a single payment</p>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-request-params">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">paymentId:
+                        <span class="prop-type">
+                          <span class="json-property-type">string</span>
+                          <span class="json-property-format">(uuid)</span>
+                          <span class="json-property-range" title="Value limits"></span>
+                        </span>
+                      </div>
+                      <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in path </div>
+                    </div>
+                    <div class="prop-value">
+                      <p>ID of payment to return</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples"></div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-responses">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">200 OK</div>
+                      <div class="prop-ref">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/Payment">Payment</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
+                    </div>
+                    <div class="prop-value">
+                      <p>Success</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">400 Bad Request</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Bad Request</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">404 Not Found</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Not found</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">500 Internal Server Error</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Internal Server Error</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Response Example
+                    <span>(200 OK)</span>
+                  </h5>
+                  <!-- <div class="hljs"> -->
+                  <html>
+                  <head></head>
+                  <body><pre><code class="hljs language-json">{
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Payment&quot;</span>,
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;216d4da9-e59a-4cc6-8df3-3da6e7580b77&quot;</span>,
+  <span class="hljs-attr">&quot;version&quot;</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attr">&quot;organisation_id&quot;</span>: <span class="hljs-string">&quot;743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb&quot;</span>,
+  <span class="hljs-attr">&quot;attributes&quot;</span>: {
+    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-PaymentAttributes/example">&quot;#/definitions/PaymentAttributes/example&quot;</a></span>
+  }
+}
+</code></pre> </body>
+                  </html>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="operation--payments--paymentId--put" class="operation panel" data-traverse-target="operation--payments--paymentId--put">
+            <h2 class="operation-title">
+              <span class="operation-summary">Update payment.</span>
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-path">
+                  <span class="operation-method">PUT</span>
+                  <span class="operation-path">/payments/{paymentId}</span>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-description">
+                  <p>Updates a payment with new information.</p>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-request-body">
+                  <div class="prop-row">
+                    <div class="prop-name">
+                      <div class="swagger-request-model">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/Payment">Payment</a>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="prop-value columns small-6">
+                      <!-- <div class="swagger-request-description"> -->
+                      <p>Updated payment</p>
+                      <!-- </div> -->
+                    </div>
+                  </div>
+                </section>
+                <section class="swagger-request-params">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">paymentId:
+                        <span class="prop-type">
+                          <span class="json-property-type">string</span>
+                          <span class="json-property-format">(uuid)</span>
+                          <span class="json-property-range" title="Value limits"></span>
+                        </span>
+                      </div>
+                      <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in path </div>
+                    </div>
+                    <div class="prop-value">
+                      <p>ID of payment to update</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Request Example</h5>
+                  <!-- <div class="hljs"> -->
+                  <html>
+                  <head></head>
+                  <body><pre><code class="hljs language-json">{
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Payment&quot;</span>,
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;216d4da9-e59a-4cc6-8df3-3da6e7580b77&quot;</span>,
+  <span class="hljs-attr">&quot;version&quot;</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attr">&quot;organisation_id&quot;</span>: <span class="hljs-string">&quot;743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb&quot;</span>,
+  <span class="hljs-attr">&quot;attributes&quot;</span>: {
+    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-PaymentAttributes/example">&quot;#/definitions/PaymentAttributes/example&quot;</a></span>
+  }
+}
+</code></pre> </body>
+                  </html>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-responses">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">200 OK</div>
+                      <div class="prop-ref">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/Payment">Payment</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
+                    </div>
+                    <div class="prop-value">
+                      <p>Success</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">304 Not Modified</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Not Modified</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">400 Bad Request</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Bad Request</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">404 Not Found</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Not found</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">500 Internal Server Error</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Internal Server Error</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Response Example
+                    <span>(200 OK)</span>
+                  </h5>
+                  <!-- <div class="hljs"> -->
+                  <html>
+                  <head></head>
+                  <body><pre><code class="hljs language-json">{
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Payment&quot;</span>,
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;216d4da9-e59a-4cc6-8df3-3da6e7580b77&quot;</span>,
+  <span class="hljs-attr">&quot;version&quot;</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attr">&quot;organisation_id&quot;</span>: <span class="hljs-string">&quot;743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb&quot;</span>,
+  <span class="hljs-attr">&quot;attributes&quot;</span>: {
+    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-PaymentAttributes/example">&quot;#/definitions/PaymentAttributes/example&quot;</a></span>
+  }
+}
+</code></pre> </body>
+                  </html>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="operation--payments--paymentId--delete" class="operation panel" data-traverse-target="operation--payments--paymentId--delete">
+            <h2 class="operation-title">
+              <span class="operation-summary">Delete a payment.</span>
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-path">
+                  <span class="operation-method">DELETE</span>
+                  <span class="operation-path">/payments/{paymentId}</span>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-description">
+                  <p>Deletes a specific payment, and its&#39; sub-resources.</p>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-request-params">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">paymentId:
+                        <span class="prop-type">
+                          <span class="json-property-type">string</span>
+                          <span class="json-property-format">(uuid)</span>
+                          <span class="json-property-range" title="Value limits"></span>
+                        </span>
+                      </div>
+                      <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in path </div>
+                    </div>
+                    <div class="prop-value">
+                      <p>ID of payment to delete</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples"></div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-responses">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">200 OK</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Success</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">400 Bad Request</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Bad Request</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">404 Not Found</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Not found</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">500 Internal Server Error</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Internal Server Error</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples"> </div>
+            </div>
+          </div>
+          <h1>Schema Definitions</h1>
+          <div id="definition-Payment" class="definition panel" data-traverse-target="definition-Payment">
+            <h2 class="panel-title">
+              <a name="/definitions/Payment"></a>Payment: object
+              <!-- <span class="json-property-type"><span class="json-property-type">object</span>
+              <span class="json-property-range" title="Value limits"></span>
+              
+              
+              </span> -->
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="json-schema-description">
+                  <p>A payment between two parties.</p>
+                </section>
+                <section class="json-schema-properties">
+                  <dl>
+                    <dt data-property-name="type">
+                      <span class="json-property-name">type:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-enum" title="Possible values">
+                        <span class="json-property-enum-item json-property-enum-default-value">Payment</span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-default-value" title="Default value">Payment</span>
+                    </dt>
+                    <dt data-property-name="id">
+                      <span class="json-property-name">id:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-format">(uuid)</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="version">
+                      <span class="json-property-name">version:</span>
+                      <span class="json-property-type">integer</span>
+                      <span class="json-property-format">(int32)</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-default-value" title="Default value">0</span>
+                    </dt>
+                    <dt data-property-name="organisation_id">
+                      <span class="json-property-name">organisation_id:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-format">(uuid)</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="attributes">
+                      <span class="json-property-name">attributes:</span>
+                      <span class="json-property-type">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/PaymentAttributes">PaymentAttributes</a>
+                        </span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                  </dl>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Example</h5>
+                  <!-- <div class="hljs"> -->
+                  <html>
+                  <head></head>
+                  <body><pre><code class="hljs language-json">{
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Payment&quot;</span>,
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;216d4da9-e59a-4cc6-8df3-3da6e7580b77&quot;</span>,
+  <span class="hljs-attr">&quot;version&quot;</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attr">&quot;organisation_id&quot;</span>: <span class="hljs-string">&quot;743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb&quot;</span>,
+  <span class="hljs-attr">&quot;attributes&quot;</span>: {
+    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-PaymentAttributes/example">&quot;#/definitions/PaymentAttributes/example&quot;</a></span>
+  }
+}
+</code></pre> </body>
+                  </html>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="definition-PaymentAttributes" class="definition panel" data-traverse-target="definition-PaymentAttributes">
+            <h2 class="panel-title">
+              <a name="/definitions/PaymentAttributes"></a>PaymentAttributes: object
+              <!-- <span class="json-property-type"><span class="json-property-type">object</span>
+              <span class="json-property-range" title="Value limits"></span>
+              
+              
+              </span> -->
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="json-schema-description">
+                  <p>Details of a payment.</p>
+                </section>
+                <section class="json-schema-properties">
+                  <dl>
+                    <dt data-property-name="amount">
+                      <span class="json-property-name">amount:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-format">(money)</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="beneficiary_party">
+                      <span class="json-property-name">beneficiary_party:</span>
+                      <span class="json-property-type">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/Party">Party</a>
+                        </span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="charges_information">
+                      <span class="json-property-name">charges_information:</span>
+                      <span class="json-property-type">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/Charges">Charges</a>
+                        </span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="currency">
+                      <span class="json-property-name">currency:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="debtor_party">
+                      <span class="json-property-name">debtor_party:</span>
+                      <span class="json-property-type">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/Party">Party</a>
+                        </span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="end_to_end_reference">
+                      <span class="json-property-name">end_to_end_reference:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="fx">
+                      <span class="json-property-name">fx:</span>
+                      <span class="json-property-type">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/CurrencyExchange">CurrencyExchange</a>
+                        </span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="numeric_reference">
+                      <span class="json-property-name">numeric_reference:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="payment_id">
+                      <span class="json-property-name">payment_id:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="payment_purpose">
+                      <span class="json-property-name">payment_purpose:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="payment_scheme">
+                      <span class="json-property-name">payment_scheme:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="payment_type">
+                      <span class="json-property-name">payment_type:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-enum" title="Possible values">
+                        <span class="json-property-enum-item">Credit</span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="processing_date">
+                      <span class="json-property-name">processing_date:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="reference">
+                      <span class="json-property-name">reference:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="scheme_payment_sub_type">
+                      <span class="json-property-name">scheme_payment_sub_type:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-enum" title="Possible values">
+                        <span class="json-property-enum-item">InternetBanking</span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="scheme_payment_type">
+                      <span class="json-property-name">scheme_payment_type:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-enum" title="Possible values">
+                        <span class="json-property-enum-item">ImmediatePayment</span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="sponsor_party">
+                      <span class="json-property-name">sponsor_party:</span>
+                      <span class="json-property-type">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/Party">Party</a>
+                        </span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                  </dl>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Example</h5>
+                  <!-- <div class="hljs"> -->
+                  <html>
+                  <head></head>
+                  <body><pre><code class="hljs language-json">{
+  <span class="hljs-attr">&quot;amount&quot;</span>: <span class="hljs-string">&quot;100.21&quot;</span>,
+  <span class="hljs-attr">&quot;beneficiary_party&quot;</span>: {
+    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-Party/example">&quot;#/definitions/Party/example&quot;</a></span>
+  },
+  <span class="hljs-attr">&quot;charges_information&quot;</span>: {
+    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-Charges/example">&quot;#/definitions/Charges/example&quot;</a></span>
+  },
+  <span class="hljs-attr">&quot;currency&quot;</span>: <span class="hljs-string">&quot;GBP&quot;</span>,
+  <span class="hljs-attr">&quot;debtor_party&quot;</span>: {
+    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-Party/example">&quot;#/definitions/Party/example&quot;</a></span>
+  },
+  <span class="hljs-attr">&quot;end_to_end_reference&quot;</span>: <span class="hljs-string">&quot;Wil piano Jan&quot;</span>,
+  <span class="hljs-attr">&quot;fx&quot;</span>: {
+    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-CurrencyExchange/example">&quot;#/definitions/CurrencyExchange/example&quot;</a></span>
+  },
+  <span class="hljs-attr">&quot;numeric_reference&quot;</span>: <span class="hljs-string">&quot;1002001&quot;</span>,
+  <span class="hljs-attr">&quot;payment_id&quot;</span>: <span class="hljs-string">&quot;123456789012345678&quot;</span>,
+  <span class="hljs-attr">&quot;payment_purpose&quot;</span>: <span class="hljs-string">&quot;Paying for goods/services&quot;</span>,
+  <span class="hljs-attr">&quot;payment_scheme&quot;</span>: <span class="hljs-string">&quot;FPS&quot;</span>,
+  <span class="hljs-attr">&quot;payment_type&quot;</span>: <span class="hljs-string">&quot;Credit&quot;</span>,
+  <span class="hljs-attr">&quot;processing_date&quot;</span>: <span class="hljs-string">&quot;2017-01-18&quot;</span>,
+  <span class="hljs-attr">&quot;reference&quot;</span>: <span class="hljs-string">&quot;Payment for Em&apos;s piano lessons&quot;</span>,
+  <span class="hljs-attr">&quot;scheme_payment_sub_type&quot;</span>: <span class="hljs-string">&quot;InternetBanking&quot;</span>,
+  <span class="hljs-attr">&quot;scheme_payment_type&quot;</span>: <span class="hljs-string">&quot;ImmediatePayment&quot;</span>,
+  <span class="hljs-attr">&quot;sponsor_party&quot;</span>: {
+    <span class="hljs-attr">&quot;$ref&quot;</span>: <span class="hljs-string"><a href="#definition-Party/example">&quot;#/definitions/Party/example&quot;</a></span>
+  }
+}
+</code></pre> </body>
+                  </html>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="definition-Party" class="definition panel" data-traverse-target="definition-Party">
+            <h2 class="panel-title">
+              <a name="/definitions/Party"></a>Party: object
+              <!-- <span class="json-property-type"><span class="json-property-type">object</span>
+              <span class="json-property-range" title="Value limits"></span>
+              
+              
+              </span> -->
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="json-schema-description">
+                  <p>A real-life entity capable of making and receiving payments.</p>
+                </section>
+                <section class="json-schema-properties">
+                  <dl>
+                    <dt data-property-name="account_name">
+                      <span class="json-property-name">account_name:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="account_number">
+                      <span class="json-property-name">account_number:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="account_number_code">
+                      <span class="json-property-name">account_number_code:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="account_type">
+                      <span class="json-property-name">account_type:</span>
+                      <span class="json-property-type">integer</span>
+                      <span class="json-property-format">(int32)</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="address">
+                      <span class="json-property-name">address:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dt data-property-name="bank_id">
+                      <span class="json-property-name">bank_id:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="bank_id_code">
+                      <span class="json-property-name">bank_id_code:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="name">
+                      <span class="json-property-name">name:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                  </dl>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Example</h5>
+                  <!-- <div class="hljs"> -->
+                  <html>
+                  <head></head>
+                  <body><pre><code class="hljs language-json">{
+  <span class="hljs-attr">&quot;account_name&quot;</span>: <span class="hljs-string">&quot;W Owens&quot;</span>,
+  <span class="hljs-attr">&quot;account_number&quot;</span>: <span class="hljs-string">&quot;31926819&quot;</span>,
+  <span class="hljs-attr">&quot;account_number_code&quot;</span>: <span class="hljs-string">&quot;BBAN&quot;</span>,
+  <span class="hljs-attr">&quot;account_type&quot;</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attr">&quot;address&quot;</span>: <span class="hljs-string">&quot;1 The Beneficiary Localtown SE2&quot;</span>,
+  <span class="hljs-attr">&quot;bank_id&quot;</span>: <span class="hljs-string">&quot;403000&quot;</span>,
+  <span class="hljs-attr">&quot;bank_id_code&quot;</span>: <span class="hljs-string">&quot;GBDSC&quot;</span>,
+  <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Wilfred Jeremiah Owens&quot;</span>
+}
+</code></pre> </body>
+                  </html>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="definition-Money" class="definition panel" data-traverse-target="definition-Money">
+            <h2 class="panel-title">
+              <a name="/definitions/Money"></a>Money: object
+              <!-- <span class="json-property-type"><span class="json-property-type">object</span>
+              <span class="json-property-range" title="Value limits"></span>
+              
+              
+              </span> -->
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="json-schema-description">
+                  <p>Makes the world go round.</p>
+                </section>
+                <section class="json-schema-properties">
+                  <dl>
+                    <dt data-property-name="amount">
+                      <span class="json-property-name">amount:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-format">(money)</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="currency">
+                      <span class="json-property-name">currency:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                  </dl>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Example</h5>
+                  <!-- <div class="hljs"> -->
+                  <html>
+                  <head></head>
+                  <body><pre><code class="hljs language-json">{
+  <span class="hljs-attr">&quot;amount&quot;</span>: <span class="hljs-string">&quot;5.00&quot;</span>,
+  <span class="hljs-attr">&quot;currency&quot;</span>: <span class="hljs-string">&quot;GBP&quot;</span>
+}
+</code></pre> </body>
+                  </html>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="definition-Charges" class="definition panel" data-traverse-target="definition-Charges">
+            <h2 class="panel-title">
+              <a name="/definitions/Charges"></a>Charges: object
+              <!-- <span class="json-property-type"><span class="json-property-type">object</span>
+              <span class="json-property-range" title="Value limits"></span>
+              
+              
+              </span> -->
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="json-schema-description">
+                  <p>A list of monies to be deducted from somewhere.</p>
+                </section>
+                <section class="json-schema-properties">
+                  <dl>
+                    <dt data-property-name="bearer_code">
+                      <span class="json-property-name">bearer_code:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="sender_charges">
+                      <span class="json-property-name">sender_charges:</span>
+                      <span class="json-property-type">
+                        <span class="json-schema-ref-array">
+                          <a class="json-schema-ref" href="#/definitions/Money">Money</a>
+                        </span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt class="json-inner-schema">
+                      <section class="json-schema-array-items">
+                        <span class="json-property-type">
+                          <span class="">
+                            <a class="json-schema-ref" href="#/definitions/Money">Money</a>
+                          </span>
+                        </span>
+                        <span class="json-property-range" title="Value limits"></span>
+                        <div class="json-inner-schema"> </div>
+                      </section>
+                    </dt>
+                    <dt data-property-name="receiver_charges_amount">
+                      <span class="json-property-name">receiver_charges_amount:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-format">(money)</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="receiver_charges_currency">
+                      <span class="json-property-name">receiver_charges_currency:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                  </dl>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Example</h5>
+                  <!-- <div class="hljs"> -->
+                  <html>
+                  <head></head>
+                  <body><pre><code class="hljs language-json">{
+  <span class="hljs-attr">&quot;bearer_code&quot;</span>: <span class="hljs-string">&quot;SHAR&quot;</span>,
+  <span class="hljs-attr">&quot;sender_charges&quot;</span>: [
+    {
+      <span class="hljs-attr">&quot;amount&quot;</span>: <span class="hljs-string">&quot;5.00&quot;</span>,
+      <span class="hljs-attr">&quot;currency&quot;</span>: <span class="hljs-string">&quot;GBP&quot;</span>
+    },
+    {
+      <span class="hljs-attr">&quot;amount&quot;</span>: <span class="hljs-string">&quot;10.00&quot;</span>,
+      <span class="hljs-attr">&quot;currency&quot;</span>: <span class="hljs-string">&quot;GBP&quot;</span>
+    }
+  ],
+  <span class="hljs-attr">&quot;receiver_charges_amount&quot;</span>: <span class="hljs-string">&quot;1.00&quot;</span>,
+  <span class="hljs-attr">&quot;receiver_charges_currency&quot;</span>: <span class="hljs-string">&quot;USD&quot;</span>
+}
+</code></pre> </body>
+                  </html>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="definition-CurrencyExchange" class="definition panel" data-traverse-target="definition-CurrencyExchange">
+            <h2 class="panel-title">
+              <a name="/definitions/CurrencyExchange"></a>CurrencyExchange: object
+              <!-- <span class="json-property-type"><span class="json-property-type">object</span>
+              <span class="json-property-range" title="Value limits"></span>
+              
+              
+              </span> -->
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="json-schema-description">
+                  <p>An amount being exchanged from a given currency.</p>
+                </section>
+                <section class="json-schema-properties">
+                  <dl>
+                    <dt data-property-name="contract_reference">
+                      <span class="json-property-name">contract_reference:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="exchange_rate">
+                      <span class="json-property-name">exchange_rate:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="original_amount">
+                      <span class="json-property-name">original_amount:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-format">(money)</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                    <dt data-property-name="original_currency">
+                      <span class="json-property-name">original_currency:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                      <span class="json-property-required"></span>
+                    </dt>
+                  </dl>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Example</h5>
+                  <!-- <div class="hljs"> -->
+                  <html>
+                  <head></head>
+                  <body><pre><code class="hljs language-json">{
+  <span class="hljs-attr">&quot;contract_reference&quot;</span>: <span class="hljs-string">&quot;FX123&quot;</span>,
+  <span class="hljs-attr">&quot;exchange_rate&quot;</span>: <span class="hljs-string">&quot;2.00000&quot;</span>,
+  <span class="hljs-attr">&quot;original_amount&quot;</span>: <span class="hljs-string">&quot;200.42&quot;</span>,
+  <span class="hljs-attr">&quot;original_currency&quot;</span>: <span class="hljs-string">&quot;USD&quot;</span>
+}
+</code></pre> </body>
+                  </html>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+          </div>
+          <div class="doc-row no-margin">
+            <div class="doc-copy doc-separator">
+              <a class="powered-by" href="https://sourcey.com/spectacle">Documentation by
+                <span>Spectacle</span>
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </body>
+</html>
