@@ -23,3 +23,24 @@ func Test_Create_Returns_Created_Payment_When_Payment_Valid(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, incomingPayment, createdPayment)
 }
+
+func Test_Create_Returns_Error_When_Creating_Existing_Payment(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	DB := testhelpers.DBConnection(t, &Payment{})
+	incomingPayment := validPayment()
+	Create(DB, incomingPayment)
+	createdPayment, err := Create(DB, incomingPayment)
+	assert.NotNil(t, err)
+	assert.Nil(t, createdPayment)
+}
+
+func Test_Create_Returns_Error_When_Payment_Invalid(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	DB := testhelpers.DBConnection(t, &Payment{})
+	incomingPayment := validPayment()
+	incomingPayment.ID = ""
+	incomingPayment.Version = -1
+	createdPayment, err := Create(DB, incomingPayment)
+	assert.NotNil(t, err)
+	assert.Nil(t, createdPayment)
+}
