@@ -20,6 +20,7 @@ func StartServer(port int, DB *gorm.DB) error {
 		rest.Get("/.status", func(w rest.ResponseWriter, r *rest.Request) {
 			w.WriteJson(statusMw.GetStatus())
 		}),
+		rest.Get("/payments", AllPayments(DB)),
 	)
 
 	if err != nil {
