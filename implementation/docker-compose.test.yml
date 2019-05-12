@@ -1,0 +1,12 @@
+version: "3.4"
+services:
+  go-pay-me-tests:
+    build:
+      context: .
+      target: test
+    environment:
+      - FULL_STACK_TEST=true
+      - API_HOST=go-pay-me
+      - API_PORT=8000
+    links:
+      - go-pay-me

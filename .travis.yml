@@ -17,8 +17,7 @@ before_script:
   - cd implementation
 
 script:
-  - docker build -t ${IMAGE}:test --target test --pull .
-  - docker run --rm ${IMAGE}:test
+  - docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --remove-orphans --exit-code-from go-pay-me-tests
   - docker build -t ${IMAGE}:prod --target prod --pull .
   - docker tag ${IMAGE}:prod ${HEROKU_IMAGE}
 
