@@ -3,7 +3,7 @@
   "info": {
     "title": "Payments",
     "description": "This is a payments API design.",
-    "version": "3.6.0",
+    "version": "3.7.0",
     "contact": {
       "name": "Liam Humphreys",
       "url": "https://github.com/Angry-Potato"
@@ -440,7 +440,7 @@
           {
             "name": "paymentId",
             "in": "path",
-            "description": "ID of payment to return",
+            "description": "ID of payment to update",
             "required": true,
             "type": "string",
             "format": "uuid"
@@ -464,6 +464,34 @@
           },
           "304": {
             "description": "Not Modified"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a payment.",
+        "description": "Deletes a specific payment, and its' sub-resources.",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "in": "path",
+            "description": "ID of payment to delete",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
           },
           "400": {
             "description": "Bad Request"
