@@ -59,3 +59,26 @@ func DeleteAllPayments(DB *gorm.DB) func(w rest.ResponseWriter, r *rest.Request)
 		w.WriteJson(`{}`)
 	}
 }
+
+// SetAllPayments handler
+func SetAllPayments(DB *gorm.DB) func(w rest.ResponseWriter, r *rest.Request) {
+	return func(w rest.ResponseWriter, r *rest.Request) {
+		newPayments := []payments.Payment{}
+		if err := r.DecodeJsonPayload(&newPayments); err != nil {
+			rest.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		createdPayments, err := payments.SetAll(DB, newPayments)
+
+		if err != nil {
+			if _, ok := err.(*payments.ValidationError); ok {
+				rest.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			rest.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.WriteJson(createdPayments)
+	}
+}

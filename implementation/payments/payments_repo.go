@@ -48,10 +48,10 @@ func DeleteAll(DB *gorm.DB) error {
 }
 
 // SetAll payments
-func SetAll(DB *gorm.DB, payments []*Payment) ([]Payment, error) {
+func SetAll(DB *gorm.DB, payments []Payment) ([]Payment, error) {
 	var consolidatedValidation []error
 	for _, payment := range payments {
-		validationErrors := Validate(payment)
+		validationErrors := Validate(&payment)
 		if len(validationErrors) != 0 {
 			consolidatedValidation = append(consolidatedValidation, consolidateValidationErrors(validationErrors, fmt.Sprintf("Validation errors whilst creating payment with id %s", payment.ID)))
 		}
@@ -89,13 +89,13 @@ func consolidateValidationErrors(errs []error, prefix string) error {
 }
 
 // shamelessly stolen from https://github.com/jinzhu/gorm/issues/255#issuecomment-481159929
-func batchInsert(DB *gorm.DB, objArr []*Payment) (int64, error) {
+func batchInsert(DB *gorm.DB, objArr []Payment) (int64, error) {
 	// If there is no data, nothing to do.
 	if len(objArr) == 0 {
 		return 0, errors.New("insert a slice length of 0")
 	}
 
-	mainObj := *(objArr[0])
+	mainObj := objArr[0]
 	mainScope := DB.NewScope(mainObj)
 	mainFields := mainScope.Fields()
 	quoted := make([]string, 0, len(mainFields))
@@ -111,7 +111,7 @@ func batchInsert(DB *gorm.DB, objArr []*Payment) (int64, error) {
 	placeholdersArr := make([]string, 0, len(objArr))
 
 	for _, obj := range objArr {
-		scope := DB.NewScope(*obj)
+		scope := DB.NewScope(obj)
 		fields := scope.Fields()
 		placeholders := make([]string, 0, len(fields))
 		for i := range fields {
