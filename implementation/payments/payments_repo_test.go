@@ -48,3 +48,23 @@ func Test_Create_Returns_ValidationError_When_Payment_Invalid(t *testing.T) {
 	_, ok := err.(*ValidationError)
 	assert.True(t, ok)
 }
+
+func Test_Delete_Deletes_All_Payments(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	DB := testhelpers.DBConnection(t, &Payment{})
+	Create(DB, validPayment())
+	Create(DB, validPayment())
+	err := DeleteAll(DB)
+	assert.Nil(t, err)
+	allPayments, err := All(DB)
+	assert.Nil(t, err)
+	assert.Empty(t, allPayments)
+}
+
+func Test_Delete_Returns_No_Error_If_No_Prior_Payments_Exist(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	DB := testhelpers.DBConnection(t, &Payment{})
+	DeleteAll(DB)
+	err := DeleteAll(DB)
+	assert.Nil(t, err)
+}

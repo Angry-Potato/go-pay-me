@@ -38,3 +38,10 @@ func Create(DB *gorm.DB, payment *Payment) (*Payment, error) {
 	}
 	return nil, &ValidationError{strings.Join(errstrings, ", ")}
 }
+
+// DeleteAll payments
+func DeleteAll(DB *gorm.DB) error {
+	allPayments := []Payment{}
+	err := DB.Delete(&allPayments).Error
+	return err
+}
