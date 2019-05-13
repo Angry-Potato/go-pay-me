@@ -3,6 +3,8 @@ package payments
 import (
 	"testing"
 
+	"github.com/jinzhu/gorm"
+
 	"github.com/Angry-Potato/go-pay-me/implementation/testhelpers"
 	"github.com/stretchr/testify/assert"
 )
@@ -126,6 +128,32 @@ func Test_Get_Returns_ValidationError_When_Payment_ID_Invalid(t *testing.T) {
 	foundPayment, err := Get(DB, "not a uuid")
 	assert.NotNil(t, err)
 	assert.Nil(t, foundPayment)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+}
+
+func Test_Delete_Returns_Nil_Error_When_Payment_Exists(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	DB := testhelpers.DBConnection(t, &Payment{})
+	incomingPayment := validPayment()
+	Create(DB, incomingPayment)
+	err := Delete(DB, incomingPayment.ID)
+	assert.Nil(t, err)
+}
+
+func Test_Delete_Returns_Error_When_Payment_Does_Not_Exist(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	DB := testhelpers.DBConnection(t, &Payment{})
+	err := Delete(DB, "unused-id")
+	assert.NotNil(t, err)
+	assert.True(t, gorm.IsRecordNotFoundError(err))
+}
+
+func Test_Delete_Returns_ValidationError_When_Payment_ID_Invalid(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	DB := testhelpers.DBConnection(t, &Payment{})
+	err := Delete(DB, "not a uuid")
+	assert.NotNil(t, err)
 	_, ok := err.(*ValidationError)
 	assert.True(t, ok)
 }

@@ -94,6 +94,23 @@ func Get(DB *gorm.DB, ID string) (*Payment, error) {
 	return &payment, nil
 }
 
+// Delete a payment by ID
+func Delete(DB *gorm.DB, ID string) error {
+	err := ValidateID(ID)
+	if err != nil {
+		return &ValidationError{err.Error()}
+	}
+
+	DB = DB.Delete(&Payment{ID: ID})
+	if err = DB.Error; err != nil {
+		return err
+	}
+	if DB.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return nil
+}
+
 func consolidateValidationErrors(errs []error, prefix string) error {
 	var errstrings []string
 	for _, err := range errs {
