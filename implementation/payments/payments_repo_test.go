@@ -49,22 +49,58 @@ func Test_Create_Returns_ValidationError_When_Payment_Invalid(t *testing.T) {
 	assert.True(t, ok)
 }
 
-func Test_Delete_Deletes_All_Payments(t *testing.T) {
+func Test_DeleteAll_Deletes_All_Payments(t *testing.T) {
 	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	Create(DB, validPayment())
 	Create(DB, validPayment())
 	err := DeleteAll(DB)
 	assert.Nil(t, err)
-	allPayments, err := All(DB)
-	assert.Nil(t, err)
-	assert.Empty(t, allPayments)
 }
 
-func Test_Delete_Returns_No_Error_If_No_Prior_Payments_Exist(t *testing.T) {
+func Test_DeleteAll_Returns_No_Error_If_No_Prior_Payments_Exist(t *testing.T) {
 	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	DeleteAll(DB)
 	err := DeleteAll(DB)
 	assert.Nil(t, err)
+}
+
+func Test_SetAll_Returns_Inserted_Payments(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	DB := testhelpers.DBConnection(t, &Payment{})
+	allPayments := []*Payment{
+		validPayment(),
+		validPayment(),
+		validPayment(),
+		validPayment(),
+	}
+	newPayments, err := SetAll(DB, allPayments)
+	assert.Nil(t, err)
+	dereferenced := []Payment{}
+	for _, payment := range allPayments {
+		dereferenced = append(dereferenced, *payment)
+	}
+	assert.ElementsMatch(t, dereferenced, newPayments)
+}
+
+func Test_SetAll_Returns_ValidationError_If_Any_Payments_Are_Invalid(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	DB := testhelpers.DBConnection(t, &Payment{})
+	badEgg := validPayment()
+	badEgg.ID = "not a real uuid"
+	badEgg.Version = -1
+	allPayments := []*Payment{
+		validPayment(),
+		validPayment(),
+		validPayment(),
+		validPayment(),
+		badEgg,
+	}
+	newPayments, err := SetAll(DB, allPayments)
+	assert.NotNil(t, err)
+	assert.Empty(t, newPayments)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+	assert.Contains(t, err.Error(), badEgg.ID)
 }
