@@ -44,3 +44,18 @@ func CreatePayment(DB *gorm.DB) func(w rest.ResponseWriter, r *rest.Request) {
 		w.WriteJson(&createdPayment)
 	}
 }
+
+// DeleteAllPayments handler
+func DeleteAllPayments(DB *gorm.DB) func(w rest.ResponseWriter, r *rest.Request) {
+	return func(w rest.ResponseWriter, r *rest.Request) {
+		err := payments.DeleteAll(DB)
+
+		if err != nil {
+			rest.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		w.WriteJson(`{}`)
+	}
+}

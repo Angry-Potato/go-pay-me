@@ -74,3 +74,28 @@ func Test_Create_Payment_Returns_Failure_For_Creating_Existing_Payment(t *testin
 	assert.Equal(t, 500, resp.StatusCode())
 	assert.NotEmpty(t, resp.String())
 }
+
+func Test_DeleteAll_Payments_Returns_Successfully(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
+	paymentToCreate := validPayment()
+	resty.R().SetBody(*paymentToCreate).Post(address)
+	resp, err := resty.R().Delete(address)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, resp.StatusCode())
+	allPayments := []payments.Payment{}
+	resp, err = resty.R().SetResult(&allPayments).Get(address)
+	assert.Nil(t, err)
+	assert.Empty(t, allPayments)
+}
+
+func Test_DeleteAll_Payments_Returns_Successfully_When_No_Prior_Payments_Exist(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
+	paymentToCreate := validPayment()
+	resty.R().SetBody(*paymentToCreate).Post(address)
+	resty.R().Delete(address)
+	resp, err := resty.R().Delete(address)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, resp.StatusCode())
+}
