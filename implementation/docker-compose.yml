@@ -13,8 +13,8 @@ services:
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - DB_NAME=payments
-    expose:
-      - 8000
+    ports:
+      - 8000:8000
     links:
       - postgres
 

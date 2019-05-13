@@ -176,3 +176,52 @@ func Test_Delete_Payment_By_ID_Returns_Failure_For_Bad_Request(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 400, resp.StatusCode())
 }
+
+func Test_Put_Payment_By_ID_Returns_Successfully(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
+	paymentToCreate := validPayment()
+	resty.R().SetBody(*paymentToCreate).Post(address)
+	address = fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), paymentToCreate.ID)
+	paymentToCreate.Version = 222
+	updatedPayment := &payments.Payment{}
+	resp, err := resty.R().SetBody(paymentToCreate).SetResult(updatedPayment).Put(address)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, resp.StatusCode())
+	assert.Equal(t, updatedPayment, paymentToCreate)
+}
+
+func Test_Put_Payment_By_ID_Returns_Failure_For_No_Change(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
+	paymentToCreate := validPayment()
+	resty.R().SetBody(*paymentToCreate).Post(address)
+	address = fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), paymentToCreate.ID)
+	resp, err := resty.R().SetBody(paymentToCreate).Put(address)
+	assert.Nil(t, err)
+	assert.Equal(t, 304, resp.StatusCode())
+	assert.Empty(t, resp.String())
+}
+
+func Test_Put_Payment_By_ID_Returns_Failure_For_Non_Existent_Payment(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	payment := validPayment()
+	address := fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), payment.ID)
+	resp, err := resty.R().SetBody(payment).Put(address)
+	assert.Nil(t, err)
+	assert.Equal(t, 404, resp.StatusCode())
+}
+
+func Test_Put_Payment_By_ID_Returns_Failure_For_Bad_Request(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	address := fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), "ohhhhh sh*t")
+	resp, err := resty.R().Put(address)
+	assert.Nil(t, err)
+	assert.Equal(t, 400, resp.StatusCode())
+	paymentToUpdate := validPayment()
+	address = fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), paymentToUpdate.ID)
+	paymentToUpdate.OrganisationID = "oh no no no"
+	resp, err = resty.R().SetBody(paymentToUpdate).Put(address)
+	assert.Nil(t, err)
+	assert.Equal(t, 400, resp.StatusCode())
+}
