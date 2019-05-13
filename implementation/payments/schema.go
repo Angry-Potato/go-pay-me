@@ -19,11 +19,8 @@ type Payment struct {
 // Validate a payment resource
 func Validate(payment *Payment) []error {
 	validationErrors := []error{}
-	if payment.ID == "" {
-		validationErrors = append(validationErrors, errors.New("ID cannot be empty"))
-	}
-	if !isUUID(payment.ID) {
-		validationErrors = append(validationErrors, errors.New("ID invalid, must be purely alphanumeric with dashes"))
+	if err := ValidateID(payment.ID); err != nil {
+		validationErrors = append(validationErrors, err)
 	}
 	if !isKnownType(payment.Type) {
 		validationErrors = append(validationErrors, fmt.Errorf("Unknown payment type: %s", payment.Type))
@@ -35,6 +32,17 @@ func Validate(payment *Payment) []error {
 		validationErrors = append(validationErrors, errors.New("OrganisationID invalid, must be purely alphanumeric with dashes"))
 	}
 	return validationErrors
+}
+
+// ValidateID of a payment
+func ValidateID(ID string) error {
+	if ID == "" {
+		return errors.New("ID cannot be empty")
+	}
+	if !isUUID(ID) {
+		return errors.New("ID invalid, must be purely alphanumeric with dashes")
+	}
+	return nil
 }
 
 func isKnownType(alienType string) bool {

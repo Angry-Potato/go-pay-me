@@ -80,6 +80,20 @@ func SetAll(DB *gorm.DB, payments []Payment) ([]Payment, error) {
 	return nil, consolidateValidationErrors(consolidatedValidation, "Errors")
 }
 
+// Get a payment by ID
+func Get(DB *gorm.DB, ID string) (*Payment, error) {
+	err := ValidateID(ID)
+	if err != nil {
+		return nil, &ValidationError{err.Error()}
+	}
+
+	payment := Payment{}
+	if err = DB.Where(&Payment{ID: ID}).First(&payment).Error; err != nil {
+		return nil, err
+	}
+	return &payment, nil
+}
+
 func consolidateValidationErrors(errs []error, prefix string) error {
 	var errstrings []string
 	for _, err := range errs {

@@ -100,3 +100,32 @@ func Test_SetAll_Returns_ValidationError_If_Any_Payments_Are_Invalid(t *testing.
 	assert.True(t, ok)
 	assert.Contains(t, err.Error(), badEgg.ID)
 }
+
+func Test_Get_Returns_Payment_When_Payment_Exists(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	DB := testhelpers.DBConnection(t, &Payment{})
+	incomingPayment := validPayment()
+	Create(DB, incomingPayment)
+	foundPayment, err := Get(DB, incomingPayment.ID)
+	assert.Nil(t, err)
+	assert.NotNil(t, foundPayment)
+	assert.Equal(t, foundPayment, incomingPayment)
+}
+
+func Test_Get_Returns_Nil_When_Payment_Does_Not_Exist(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	DB := testhelpers.DBConnection(t, &Payment{})
+	foundPayment, err := Get(DB, "unused-id")
+	assert.NotNil(t, err)
+	assert.Nil(t, foundPayment)
+}
+
+func Test_Get_Returns_ValidationError_When_Payment_ID_Invalid(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	DB := testhelpers.DBConnection(t, &Payment{})
+	foundPayment, err := Get(DB, "not a uuid")
+	assert.NotNil(t, err)
+	assert.Nil(t, foundPayment)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+}
