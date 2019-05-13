@@ -24,6 +24,7 @@ func StartServer(port int, DB *gorm.DB) error {
 		rest.Post("/payments", CreatePayment(DB)),
 		rest.Delete("/payments", DeleteAllPayments(DB)),
 		rest.Put("/payments", SetAllPayments(DB)),
+		rest.Get("/payments/:ID", GetPayment(DB)),
 	)
 
 	if err != nil {
