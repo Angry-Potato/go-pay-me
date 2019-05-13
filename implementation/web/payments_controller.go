@@ -105,3 +105,26 @@ func GetPayment(DB *gorm.DB) func(w rest.ResponseWriter, r *rest.Request) {
 		w.WriteJson(&foundPayment)
 	}
 }
+
+// DeletePayment handler
+func DeletePayment(DB *gorm.DB) func(w rest.ResponseWriter, r *rest.Request) {
+	return func(w rest.ResponseWriter, r *rest.Request) {
+		ID := r.PathParam("ID")
+		err := payments.Delete(DB, ID)
+
+		if err != nil {
+			if _, ok := err.(*payments.ValidationError); ok {
+				rest.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			if gorm.IsRecordNotFoundError(err) {
+				rest.NotFound(w, r)
+				return
+			}
+			rest.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.WriteJson(`{}`)
+	}
+}
