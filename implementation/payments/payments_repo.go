@@ -111,6 +111,35 @@ func Delete(DB *gorm.DB, ID string) error {
 	return nil
 }
 
+// Update a payment by ID
+func Update(DB *gorm.DB, ID string, payment *Payment) (*Payment, error) {
+	err := ValidateID(ID)
+	if err != nil {
+		return nil, &ValidationError{err.Error()}
+	}
+	errs := Validate(payment)
+	if len(errs) != 0 {
+		return nil, consolidateValidationErrors(errs, fmt.Sprintf("Validation errors whilst Updating payment %s", payment.ID))
+	}
+
+	exisingPayment, err := Get(DB, ID)
+	if err != nil {
+		return nil, err
+	}
+	if *exisingPayment == *payment {
+		return nil, nil
+	}
+
+	DB = DB.Save(payment)
+	if err = DB.Error; err != nil {
+		return nil, err
+	}
+	if DB.RowsAffected == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+	return payment, nil
+}
+
 func consolidateValidationErrors(errs []error, prefix string) error {
 	var errstrings []string
 	for _, err := range errs {

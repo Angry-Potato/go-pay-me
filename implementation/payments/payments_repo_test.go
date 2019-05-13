@@ -157,3 +157,54 @@ func Test_Delete_Returns_ValidationError_When_Payment_ID_Invalid(t *testing.T) {
 	_, ok := err.(*ValidationError)
 	assert.True(t, ok)
 }
+
+func Test_Update_Returns_Updated_Payment_When_Payment_Exists_And_Valid_Update(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	DB := testhelpers.DBConnection(t, &Payment{})
+	incomingPayment := validPayment()
+	Create(DB, incomingPayment)
+	incomingPayment.Version = 999
+	newPayment, err := Update(DB, incomingPayment.ID, incomingPayment)
+	assert.Nil(t, err)
+	assert.Equal(t, incomingPayment, newPayment)
+}
+
+func Test_Update_Returns_Nil_When_Payment_Exists_Unchanged(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	DB := testhelpers.DBConnection(t, &Payment{})
+	incomingPayment := validPayment()
+	Create(DB, incomingPayment)
+	newPayment, err := Update(DB, incomingPayment.ID, incomingPayment)
+	assert.Nil(t, err)
+	assert.Nil(t, newPayment)
+}
+
+func Test_Update_Returns_Error_When_Payment_Does_Not_Exist(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	DB := testhelpers.DBConnection(t, &Payment{})
+	payment, err := Update(DB, "unused-id", validPayment())
+	assert.NotNil(t, err)
+	assert.Nil(t, payment)
+	assert.True(t, gorm.IsRecordNotFoundError(err))
+}
+
+func Test_Update_Returns_ValidationError_When_Payment_ID_Invalid(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	DB := testhelpers.DBConnection(t, &Payment{})
+	_, err := Update(DB, "not a uuid", validPayment())
+	assert.NotNil(t, err)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+}
+
+func Test_Update_Returns_ValidationError_When_Payment_Update_Invalid(t *testing.T) {
+	testhelpers.FullStackTest(t)
+	DB := testhelpers.DBConnection(t, &Payment{})
+	payment := validPayment()
+	payment.Version = -22
+	newPayment, err := Update(DB, payment.ID, payment)
+	assert.NotNil(t, err)
+	assert.Nil(t, newPayment)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+}
