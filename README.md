@@ -88,7 +88,7 @@ Execute the acceptance test suite by running the make command (requires having t
 
     API_HOST=localhost API_PORT=8000 make test-acceptance
 
-To execute the all tests (unit, integration, acceptance), run the make command:
+To execute all tests (unit, integration, acceptance), run the make command:
 
     make docker-compose-test
 
