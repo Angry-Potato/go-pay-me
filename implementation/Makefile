@@ -11,8 +11,8 @@ BINARY_UNIX=$(BINARY_NAME)_unix
 TEST_ARGS=-v ./...
 COMPOSE_PARANOID_ARGS=--force-recreate --always-recreate-deps --build -V --remove-orphans
 
-all: test build
-build: 
+all: deps test build
+build: deps
 	$(GOBUILD) -o $(BINARY_NAME) -v
 test: 
 	$(GOTEST) -tags=unit $(TEST_ARGS)
