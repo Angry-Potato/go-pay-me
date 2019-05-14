@@ -49,3 +49,9 @@ I've looked at many Golang web frameworks, and landed on [go-json-rest](https://
 Given that my favourite part of development is automation, I see it as important that I get the implementation's pipeline up before anything else. I've implemented the default [go-json-rest](https://github.com/ant0ine/go-json-rest) server, and written a single test, I'll now hook this up to [Travis-CI](https://travis-ci.org/). I chose to automate using Travis, even though I have no experience with it, because I saw that Form3 use Travis for at least some of their projects.
 
 I have built the Travis pipeline! It builds and tests the docker image, then deploys to [heroku](https://go-pay-me.herokuapp.com/). Suppose I should do the feature work now..
+
+## 14th May
+
+Yesterday I finished implementing the basic payments RESTful interactions. The implementation took a bit longer than expected as I failed to account for library learning time. I'm happy with the automation, and design doc generation that I've set up. Less happy with the test suite in the implementation, there are a couple of race conditions. I'm contemplating writing a small acceptance test suite that will run in series to verify correctness of the API. At the very least, the existing suite needs to be refactored as it's pretty WET.
+
+I need to update READMEs with build/test/run instructions, and add the sub-resources to payments, and that should be it!
