@@ -5,6 +5,7 @@ GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 DEPENSURE=$(DEPCMD) ensure
+IMAGE_NAME=go-pay-me
 BINARY_NAME=app
 BINARY_UNIX=$(BINARY_NAME)_unix
 		
@@ -22,8 +23,15 @@ run: build
 deps:
 	$(DEPENSURE)
 
-# Cross compilation
-build-linux:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -o $(BINARY_UNIX) -v
-docker-build:
-	docker run --rm -it -v "$(GOPATH)":/go -w /go/src/bitbucket.org/rsohlich/makepost golang:latest go build -o "$(BINARY_UNIX)" -v
+# Docker
+build-docker-image:
+	docker build --force-rm --pull --tag $(IMAGE_NAME):latest .
+
+run-docker-image: build-docker-image
+	docker run --rm $(IMAGE_NAME):latest
+
+docker-compose-up:
+	docker-compose up --force-recreate --always-recreate-deps --build -V --remove-orphans
+
+docker-compose-test:
+	docker-compose -f docker-compose.yml -f docker-compose.test.yml up --force-recreate --always-recreate-deps --build -V --remove-orphans --exit-code-from $(IMAGE_NAME)-tests
