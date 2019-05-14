@@ -2,4 +2,4 @@
 
 ## Design :computer:
 
-See root [README](../README.md)
+See root [README](https://github.com/Angry-Potato/go-pay-me)
