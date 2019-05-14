@@ -1,0 +1,500 @@
+= Payments
+
+
+[[_overview]]
+== Overview
+This is a payments API design. The API will utilise the https://github.com/ant0ine/go-json-rest[go-json-rest] web framework backed by https://github.com/jinzhu/gorm[gorm], connecting to a https://www.postgresql.org/[postgres] database.
+
+
+=== Version information
+[%hardbreaks]
+__Version__ : 3.7.3
+
+
+=== Contact information
+[%hardbreaks]
+__Contact__ : Liam Humphreys
+
+
+=== License information
+[%hardbreaks]
+__License__ : MIT
+__License URL__ : https://raw.githubusercontent.com/Angry-Potato/go-pay-me/master/LICENSE
+__Terms of service__ : null
+
+
+=== URI scheme
+[%hardbreaks]
+__Host__ : localhost
+__BasePath__ : /
+__Schemes__ : HTTP
+
+
+=== Consumes
+
+* `application/json`
+
+
+=== Produces
+
+* `application/json`
+
+
+=== External Docs
+[%hardbreaks]
+__Description__ : Raw file on Github
+__URL__ : https://raw.githubusercontent.com/Angry-Potato/go-pay-me/master/design/payments.swagger.json
+
+
+
+
+[[_paths]]
+== Paths
+
+[[_payments_get]]
+=== List all payments.
+....
+GET /payments
+....
+
+
+==== Description
+Lists all payments.
+
+
+==== Responses
+
+[options="header", cols=".^2a,.^14a,.^4a"]
+|===
+|HTTP Code|Description|Schema
+|**200**|Success|< <<_payment,Payment>> > array
+|**500**|Internal Server Error|No Content
+|===
+
+
+[[_payments_put]]
+=== Bulk update payments.
+....
+PUT /payments
+....
+
+
+==== Description
+Bulk updates payments, as well as all their sub-resources.
+
+
+==== Parameters
+
+[options="header", cols=".^2a,.^3a,.^9a,.^4a"]
+|===
+|Type|Name|Description|Schema
+|**Body**|**body** +
+__required__|Payments to be updated.|< <<_payment,Payment>> > array
+|===
+
+
+==== Responses
+
+[options="header", cols=".^2a,.^14a,.^4a"]
+|===
+|HTTP Code|Description|Schema
+|**200**|Success|< <<_payment,Payment>> > array
+|**400**|Bad Request|No Content
+|**500**|Internal Server Error|No Content
+|===
+
+
+[[_payments_post]]
+=== Create new payment.
+....
+POST /payments
+....
+
+
+==== Description
+Creates a new payment, and all of its' sub-resources.
+
+
+==== Parameters
+
+[options="header", cols=".^2a,.^3a,.^9a,.^4a"]
+|===
+|Type|Name|Description|Schema
+|**Body**|**body** +
+__required__|Payment that needs to be added to the service|<<_payment,Payment>>
+|===
+
+
+==== Responses
+
+[options="header", cols=".^2a,.^14a,.^4a"]
+|===
+|HTTP Code|Description|Schema
+|**201**|Created|<<_payment,Payment>>
+|**400**|Bad Request|No Content
+|**500**|Internal Server Error|No Content
+|===
+
+
+==== Example HTTP request
+
+===== Request body
+[source,json]
+----
+{
+  "type" : "Payment",
+  "id" : "216d4da9-e59a-4cc6-8df3-3da6e7580b77",
+  "version" : 0,
+  "organisation_id" : "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",
+  "attributes" : {
+    "$ref" : "#/definitions/PaymentAttributes/example"
+  }
+}
+----
+
+
+==== Example HTTP response
+
+===== Response 201
+[source,json]
+----
+{
+  "type" : "Payment",
+  "id" : "216d4da9-e59a-4cc6-8df3-3da6e7580b77",
+  "version" : 0,
+  "organisation_id" : "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",
+  "attributes" : {
+    "$ref" : "#/definitions/PaymentAttributes/example"
+  }
+}
+----
+
+
+[[_payments_delete]]
+=== Delete all payments.
+....
+DELETE /payments
+....
+
+
+==== Description
+Deletes all payments, and their sub-resources.
+
+
+==== Responses
+
+[options="header", cols=".^2a,.^14a,.^4a"]
+|===
+|HTTP Code|Description|Schema
+|**200**|Success|No Content
+|**500**|Internal Server Error|No Content
+|===
+
+
+[[_payments_paymentid_get]]
+=== Find payment by ID.
+....
+GET /payments/{paymentId}
+....
+
+
+==== Description
+Returns a single payment
+
+
+==== Parameters
+
+[options="header", cols=".^2a,.^3a,.^9a,.^4a"]
+|===
+|Type|Name|Description|Schema
+|**Path**|**paymentId** +
+__required__|ID of payment to return|string (uuid)
+|===
+
+
+==== Responses
+
+[options="header", cols=".^2a,.^14a,.^4a"]
+|===
+|HTTP Code|Description|Schema
+|**200**|Success|<<_payment,Payment>>
+|**400**|Bad Request|No Content
+|**404**|Not found|No Content
+|**500**|Internal Server Error|No Content
+|===
+
+
+==== Example HTTP response
+
+===== Response 200
+[source,json]
+----
+{
+  "type" : "Payment",
+  "id" : "216d4da9-e59a-4cc6-8df3-3da6e7580b77",
+  "version" : 0,
+  "organisation_id" : "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",
+  "attributes" : {
+    "$ref" : "#/definitions/PaymentAttributes/example"
+  }
+}
+----
+
+
+[[_payments_paymentid_put]]
+=== Update payment.
+....
+PUT /payments/{paymentId}
+....
+
+
+==== Description
+Updates a payment with new information.
+
+
+==== Parameters
+
+[options="header", cols=".^2a,.^3a,.^9a,.^4a"]
+|===
+|Type|Name|Description|Schema
+|**Path**|**paymentId** +
+__required__|ID of payment to update|string (uuid)
+|**Body**|**body** +
+__required__|Updated payment|<<_payment,Payment>>
+|===
+
+
+==== Responses
+
+[options="header", cols=".^2a,.^14a,.^4a"]
+|===
+|HTTP Code|Description|Schema
+|**200**|Success|<<_payment,Payment>>
+|**304**|Not Modified|No Content
+|**400**|Bad Request|No Content
+|**404**|Not found|No Content
+|**500**|Internal Server Error|No Content
+|===
+
+
+==== Example HTTP request
+
+===== Request body
+[source,json]
+----
+{
+  "type" : "Payment",
+  "id" : "216d4da9-e59a-4cc6-8df3-3da6e7580b77",
+  "version" : 0,
+  "organisation_id" : "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",
+  "attributes" : {
+    "$ref" : "#/definitions/PaymentAttributes/example"
+  }
+}
+----
+
+
+==== Example HTTP response
+
+===== Response 200
+[source,json]
+----
+{
+  "type" : "Payment",
+  "id" : "216d4da9-e59a-4cc6-8df3-3da6e7580b77",
+  "version" : 0,
+  "organisation_id" : "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",
+  "attributes" : {
+    "$ref" : "#/definitions/PaymentAttributes/example"
+  }
+}
+----
+
+
+[[_payments_paymentid_delete]]
+=== Delete a payment.
+....
+DELETE /payments/{paymentId}
+....
+
+
+==== Description
+Deletes a specific payment, and its' sub-resources.
+
+
+==== Parameters
+
+[options="header", cols=".^2a,.^3a,.^9a,.^4a"]
+|===
+|Type|Name|Description|Schema
+|**Path**|**paymentId** +
+__required__|ID of payment to delete|string (uuid)
+|===
+
+
+==== Responses
+
+[options="header", cols=".^2a,.^14a,.^4a"]
+|===
+|HTTP Code|Description|Schema
+|**200**|Success|No Content
+|**400**|Bad Request|No Content
+|**404**|Not found|No Content
+|**500**|Internal Server Error|No Content
+|===
+
+
+
+
+[[_definitions]]
+== Definitions
+
+[[_payment]]
+=== Payment
+A payment between two parties.
+
+
+[options="header", cols=".^3a,.^11a,.^4a"]
+|===
+|Name|Description|Schema
+|**type** +
+__optional__|**Default** : `"Payment"`|enum (Payment)
+|**id** +
+__required__||string (uuid)
+|**version** +
+__optional__|**Default** : `0`|integer (int32)
+|**organisation_id** +
+__required__||string (uuid)
+|**attributes** +
+__required__||<<_paymentattributes,PaymentAttributes>>
+|===
+
+
+[[_paymentattributes]]
+=== PaymentAttributes
+Details of a payment.
+
+
+[options="header", cols=".^3a,.^4a"]
+|===
+|Name|Schema
+|**amount** +
+__required__|string (money)
+|**beneficiary_party** +
+__required__|<<_party,Party>>
+|**charges_information** +
+__required__|<<_charges,Charges>>
+|**currency** +
+__required__|string
+|**debtor_party** +
+__required__|<<_party,Party>>
+|**end_to_end_reference** +
+__required__|string
+|**fx** +
+__optional__|<<_currencyexchange,CurrencyExchange>>
+|**numeric_reference** +
+__required__|string
+|**payment_id** +
+__required__|string
+|**payment_purpose** +
+__required__|string
+|**payment_scheme** +
+__required__|string
+|**payment_type** +
+__required__|enum (Credit)
+|**processing_date** +
+__required__|string
+|**reference** +
+__required__|string
+|**scheme_payment_sub_type** +
+__required__|enum (InternetBanking)
+|**scheme_payment_type** +
+__required__|enum (ImmediatePayment)
+|**sponsor_party** +
+__required__|<<_party,Party>>
+|===
+
+
+[[_party]]
+=== Party
+A real-life entity capable of making and receiving payments.
+
+
+[options="header", cols=".^3a,.^4a"]
+|===
+|Name|Schema
+|**account_name** +
+__optional__|string
+|**account_number** +
+__required__|string
+|**account_number_code** +
+__optional__|string
+|**account_type** +
+__optional__|integer (int32)
+|**address** +
+__optional__|string
+|**bank_id** +
+__required__|string
+|**bank_id_code** +
+__required__|string
+|**name** +
+__optional__|string
+|===
+
+
+[[_money]]
+=== Money
+Makes the world go round.
+
+
+[options="header", cols=".^3a,.^4a"]
+|===
+|Name|Schema
+|**amount** +
+__required__|string (money)
+|**currency** +
+__required__|string
+|===
+
+
+[[_charges]]
+=== Charges
+A list of monies to be deducted from somewhere.
+
+
+[options="header", cols=".^3a,.^4a"]
+|===
+|Name|Schema
+|**bearer_code** +
+__required__|string
+|**sender_charges** +
+__required__|< <<_money,Money>> > array
+|**receiver_charges_amount** +
+__required__|string (money)
+|**receiver_charges_currency** +
+__required__|string
+|===
+
+
+[[_currencyexchange]]
+=== CurrencyExchange
+An amount being exchanged from a given currency.
+
+
+[options="header", cols=".^3a,.^4a"]
+|===
+|Name|Schema
+|**contract_reference** +
+__required__|string
+|**exchange_rate** +
+__required__|string
+|**original_amount** +
+__required__|string (money)
+|**original_currency** +
+__required__|string
+|===
+
+
+
+
+
