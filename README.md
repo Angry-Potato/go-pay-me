@@ -57,7 +57,7 @@ The golang app is built, tested, and deployed using a multistage Dockerfile. The
 
 There are two docker-compose files:
 
-- [docker-compose.yml](implementation/docker-compose.yml) - used as a way of running the app locally, consists of the app, and a postgres db.
+- [docker-compose.yml](implementation/docker-compose.yml) - used as a way of running the app locally. Consists of the app, and a postgres db.
 - [docker-compose.test.yml](implementation/docker-compose.test.yml) - used as a way of full-stack testing the app locally, consists of the app, a tester app, and a postgres db.
 
 ### Building :building_construction:
