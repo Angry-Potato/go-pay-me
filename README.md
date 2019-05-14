@@ -4,9 +4,9 @@ Simple payments resource API complete with design, implementation, automation, l
 
 # Table of Contents :books:
 
-- [Final Outputs](#Final-Outputs)
-- [Design](#Design)
-  - [Docs](#Docs)
+- [Final Outputs](#final-outputs-potato)
+- [Design](#design-computer)
+  - [Docs](#docs-scroll)
 - [implementation](#implementation)
 
 ## Final Outputs :potato:
