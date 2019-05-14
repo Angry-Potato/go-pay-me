@@ -2,4 +2,4 @@
 
 ## Design :computer:
 
-See root [README](https://github.com/Angry-Potato/go-pay-me)
+See root [README](https://github.com/Angry-Potato/go-pay-me#design-computer)
