@@ -1,3 +1,5 @@
+// +build integration
+
 package payments
 
 import (
@@ -10,7 +12,6 @@ import (
 )
 
 func Test_All_Returns_List_Of_Payments(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	allPayments, err := All(DB)
 	assert.Nil(t, err)
@@ -18,7 +19,6 @@ func Test_All_Returns_List_Of_Payments(t *testing.T) {
 }
 
 func Test_Create_Returns_Created_Payment_When_Payment_Valid(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	incomingPayment := validPayment()
 	createdPayment, err := Create(DB, incomingPayment)
@@ -27,7 +27,6 @@ func Test_Create_Returns_Created_Payment_When_Payment_Valid(t *testing.T) {
 }
 
 func Test_Create_Returns_Error_When_Creating_Existing_Payment(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	incomingPayment := validPayment()
 	Create(DB, incomingPayment)
@@ -39,7 +38,6 @@ func Test_Create_Returns_Error_When_Creating_Existing_Payment(t *testing.T) {
 }
 
 func Test_Create_Returns_ValidationError_When_Payment_Invalid(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	incomingPayment := validPayment()
 	incomingPayment.ID = ""
@@ -52,7 +50,6 @@ func Test_Create_Returns_ValidationError_When_Payment_Invalid(t *testing.T) {
 }
 
 func Test_DeleteAll_Deletes_All_Payments(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	Create(DB, validPayment())
 	Create(DB, validPayment())
@@ -61,7 +58,6 @@ func Test_DeleteAll_Deletes_All_Payments(t *testing.T) {
 }
 
 func Test_DeleteAll_Returns_No_Error_If_No_Prior_Payments_Exist(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	DeleteAll(DB)
 	err := DeleteAll(DB)
@@ -69,7 +65,6 @@ func Test_DeleteAll_Returns_No_Error_If_No_Prior_Payments_Exist(t *testing.T) {
 }
 
 func Test_SetAll_Returns_Inserted_Payments(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	allPayments := []Payment{
 		*validPayment(),
@@ -83,7 +78,6 @@ func Test_SetAll_Returns_Inserted_Payments(t *testing.T) {
 }
 
 func Test_SetAll_Returns_ValidationError_If_Any_Payments_Are_Invalid(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	badEgg := validPayment()
 	badEgg.ID = "not a real uuid"
@@ -104,7 +98,6 @@ func Test_SetAll_Returns_ValidationError_If_Any_Payments_Are_Invalid(t *testing.
 }
 
 func Test_Get_Returns_Payment_When_Payment_Exists(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	incomingPayment := validPayment()
 	Create(DB, incomingPayment)
@@ -115,7 +108,6 @@ func Test_Get_Returns_Payment_When_Payment_Exists(t *testing.T) {
 }
 
 func Test_Get_Returns_Nil_When_Payment_Does_Not_Exist(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	foundPayment, err := Get(DB, "unused-id")
 	assert.NotNil(t, err)
@@ -123,7 +115,6 @@ func Test_Get_Returns_Nil_When_Payment_Does_Not_Exist(t *testing.T) {
 }
 
 func Test_Get_Returns_ValidationError_When_Payment_ID_Invalid(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	foundPayment, err := Get(DB, "not a uuid")
 	assert.NotNil(t, err)
@@ -133,7 +124,6 @@ func Test_Get_Returns_ValidationError_When_Payment_ID_Invalid(t *testing.T) {
 }
 
 func Test_Delete_Returns_Nil_Error_When_Payment_Exists(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	incomingPayment := validPayment()
 	Create(DB, incomingPayment)
@@ -142,7 +132,6 @@ func Test_Delete_Returns_Nil_Error_When_Payment_Exists(t *testing.T) {
 }
 
 func Test_Delete_Returns_Error_When_Payment_Does_Not_Exist(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	err := Delete(DB, "unused-id")
 	assert.NotNil(t, err)
@@ -150,7 +139,6 @@ func Test_Delete_Returns_Error_When_Payment_Does_Not_Exist(t *testing.T) {
 }
 
 func Test_Delete_Returns_ValidationError_When_Payment_ID_Invalid(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	err := Delete(DB, "not a uuid")
 	assert.NotNil(t, err)
@@ -159,7 +147,6 @@ func Test_Delete_Returns_ValidationError_When_Payment_ID_Invalid(t *testing.T) {
 }
 
 func Test_Update_Returns_Updated_Payment_When_Payment_Exists_And_Valid_Update(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	incomingPayment := validPayment()
 	Create(DB, incomingPayment)
@@ -170,7 +157,6 @@ func Test_Update_Returns_Updated_Payment_When_Payment_Exists_And_Valid_Update(t 
 }
 
 func Test_Update_Returns_Nil_When_Payment_Exists_Unchanged(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	incomingPayment := validPayment()
 	Create(DB, incomingPayment)
@@ -180,7 +166,6 @@ func Test_Update_Returns_Nil_When_Payment_Exists_Unchanged(t *testing.T) {
 }
 
 func Test_Update_Returns_Error_When_Payment_Does_Not_Exist(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	payment, err := Update(DB, "unused-id", validPayment())
 	assert.NotNil(t, err)
@@ -189,7 +174,6 @@ func Test_Update_Returns_Error_When_Payment_Does_Not_Exist(t *testing.T) {
 }
 
 func Test_Update_Returns_ValidationError_When_Payment_ID_Invalid(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	_, err := Update(DB, "not a uuid", validPayment())
 	assert.NotNil(t, err)
@@ -198,7 +182,6 @@ func Test_Update_Returns_ValidationError_When_Payment_ID_Invalid(t *testing.T) {
 }
 
 func Test_Update_Returns_ValidationError_When_Payment_Update_Invalid(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	DB := testhelpers.DBConnection(t, &Payment{})
 	payment := validPayment()
 	payment.Version = -22
