@@ -57,3 +57,7 @@ Yesterday I finished implementing the basic payments RESTful interactions. The i
 I need to update READMEs with build/test/run instructions, and add the sub-resources to payments, and that should be it!
 
 I moved the swagger2pdf tool out to a separate repo, it's really a separate tool.
+
+Went a bit nuts with the emoji's in the readme. Hopefully it's received as playful rather than irritating.
+
+Began separating out unit / integration / acceptance tests because I want to be able to verify complete correctness of the app. It's hard to assert your `DELETE` operation deletes all resources when another test has just `POST`ed some new ones. To do this, the acceptance suite will run in isolation, in series, after the asynchronous (unit & integration) tests. This could be made quicker by upping two instances of the app to test async & sync suites in parallel but I feel that's overkill for this little project, and the logging output would be confusing at best.
