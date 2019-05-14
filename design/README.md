@@ -2,4 +2,4 @@
 
 ## Design :computer:
 
-See root [README](..)
+See root [README](./..)
