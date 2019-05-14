@@ -55,3 +55,5 @@ I have built the Travis pipeline! It builds and tests the docker image, then dep
 Yesterday I finished implementing the basic payments RESTful interactions. The implementation took a bit longer than expected as I failed to account for library learning time. I'm happy with the automation, and design doc generation that I've set up. Less happy with the test suite in the implementation, there are a couple of race conditions. I'm contemplating writing a small acceptance test suite that will run in series to verify correctness of the API. At the very least, the existing suite needs to be refactored as it's pretty WET.
 
 I need to update READMEs with build/test/run instructions, and add the sub-resources to payments, and that should be it!
+
+I moved the swagger2pdf tool out to a separate repo, it's really a separate tool.
