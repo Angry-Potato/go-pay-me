@@ -9,6 +9,7 @@ Simple payments resource API complete with design, implementation, automation, l
   - [Docs](#docs-scroll)
 - [Implementation](#implementation-weight_lifting_man)
   - [Building](#building-building_construction)
+  - [Testing](#testing-performing_arts)
 
 ## Final Outputs :potato:
 
@@ -69,3 +70,17 @@ To build the app, generate the `app` binary by running the make command:
 To build the docker image containing the production-ready app and its' test stage, run the make command:
 
     make build-docker-image
+
+### Testing :performing_arts:
+
+The following instructions assume you are in the [implementation](implementation) directory.
+
+To test the app, execute the unit test suite by running the make command:
+
+    make test
+
+To execute the full-stack tests, run the make command:
+
+    make docker-compose-test
+
+Success or failure can be seen in the logs output, and in the exit code returned by the command.
