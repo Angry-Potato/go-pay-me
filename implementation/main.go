@@ -16,7 +16,7 @@ func main() {
 	DB, err := initDB(&payments.Payment{})
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error initialising database: %s", err.Error())
 	}
 
 	serverPort := port(os.Getenv("PORT"), 8080)

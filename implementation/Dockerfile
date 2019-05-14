@@ -8,19 +8,18 @@ WORKDIR ${GOPATH}/src/github.com/Angry-Potato/go-pay-me/implementation
 
 COPY . .
 
-RUN dep ensure
+RUN make deps
 
 
 
 FROM base as test
-ENTRYPOINT [ "go" ]
-CMD [ "test", "./..." ]
+ENTRYPOINT [ "make", "test" ]
 
 
 
 FROM base as builder
 ENV CGO_ENABLED=0
-RUN go build -o app && mv app /app
+RUN make build && mv app /app
 
 
 
