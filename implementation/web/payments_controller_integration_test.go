@@ -1,3 +1,5 @@
+// +build integration
+
 package web
 
 import (
@@ -22,7 +24,6 @@ func validPayment() *payments.Payment {
 }
 
 func Test_Get_Payments_Returns_Successfully(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
 	allPayments := []payments.Payment{}
 	resp, err := resty.R().SetResult(&allPayments).Get(address)
@@ -33,7 +34,6 @@ func Test_Get_Payments_Returns_Successfully(t *testing.T) {
 }
 
 func Test_Post_Payment_Returns_Successfully(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
 	paymentToCreate := validPayment()
 	createdPayment := &payments.Payment{}
@@ -45,7 +45,6 @@ func Test_Post_Payment_Returns_Successfully(t *testing.T) {
 }
 
 func Test_Post_Payment_Returns_Failure_For_Invalid_JSON(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
 	resp, err := resty.R().SetBody("really not json at all").SetHeader("Content-Type", "application/json").Post(address)
 	assert.Nil(t, err)
@@ -54,7 +53,6 @@ func Test_Post_Payment_Returns_Failure_For_Invalid_JSON(t *testing.T) {
 }
 
 func Test_Post_Payment_Returns_Failure_For_Invalid_Payment(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
 	paymentToCreate := validPayment()
 	paymentToCreate.Version = -1
@@ -65,7 +63,6 @@ func Test_Post_Payment_Returns_Failure_For_Invalid_Payment(t *testing.T) {
 }
 
 func Test_Post_Payment_Returns_Failure_For_Creating_Existing_Payment(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
 	paymentToCreate := validPayment()
 	resty.R().SetBody(*paymentToCreate).Post(address)
@@ -76,7 +73,6 @@ func Test_Post_Payment_Returns_Failure_For_Creating_Existing_Payment(t *testing.
 }
 
 func Test_Delete_Payments_Returns_Successfully(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
 	paymentToCreate := validPayment()
 	resty.R().SetBody(*paymentToCreate).Post(address)
@@ -86,7 +82,6 @@ func Test_Delete_Payments_Returns_Successfully(t *testing.T) {
 }
 
 func Test_Put_Payments_Returns_Successfully(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
 	allPayments := []*payments.Payment{
 		validPayment(),
@@ -103,7 +98,6 @@ func Test_Put_Payments_Returns_Successfully(t *testing.T) {
 }
 
 func Test_Put_Payments_Returns_Failure_For_Single_Bad_Egg(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
 	badEgg := validPayment()
 	badEgg.ID = "oh no!"
@@ -120,7 +114,6 @@ func Test_Put_Payments_Returns_Failure_For_Single_Bad_Egg(t *testing.T) {
 }
 
 func Test_Get_Payment_By_ID_Returns_Successfully(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
 	paymentToCreate := validPayment()
 	resty.R().SetBody(*paymentToCreate).Post(address)
@@ -133,7 +126,6 @@ func Test_Get_Payment_By_ID_Returns_Successfully(t *testing.T) {
 }
 
 func Test_Get_Payment_By_ID_Returns_Failure_For_Non_Existent_Payment(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	paymentToCreate := validPayment()
 	address := fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), paymentToCreate.ID)
 	resp, err := resty.R().Get(address)
@@ -142,7 +134,6 @@ func Test_Get_Payment_By_ID_Returns_Failure_For_Non_Existent_Payment(t *testing.
 }
 
 func Test_Get_Payment_By_ID_Returns_Failure_For_Bad_Request(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	address := fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), "ohhhhh sh*t")
 	resp, err := resty.R().Get(address)
 	assert.Nil(t, err)
@@ -150,7 +141,6 @@ func Test_Get_Payment_By_ID_Returns_Failure_For_Bad_Request(t *testing.T) {
 }
 
 func Test_Delete_Payment_By_ID_Returns_Successfully(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
 	paymentToCreate := validPayment()
 	resty.R().SetBody(*paymentToCreate).Post(address)
@@ -161,7 +151,6 @@ func Test_Delete_Payment_By_ID_Returns_Successfully(t *testing.T) {
 }
 
 func Test_Delete_Payment_By_ID_Returns_Failure_For_Non_Existent_Payment(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	paymentToCreate := validPayment()
 	address := fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), paymentToCreate.ID)
 	resp, err := resty.R().Delete(address)
@@ -170,7 +159,6 @@ func Test_Delete_Payment_By_ID_Returns_Failure_For_Non_Existent_Payment(t *testi
 }
 
 func Test_Delete_Payment_By_ID_Returns_Failure_For_Bad_Request(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	address := fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), "ohhhhh sh*t")
 	resp, err := resty.R().Delete(address)
 	assert.Nil(t, err)
@@ -178,7 +166,6 @@ func Test_Delete_Payment_By_ID_Returns_Failure_For_Bad_Request(t *testing.T) {
 }
 
 func Test_Put_Payment_By_ID_Returns_Successfully(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
 	paymentToCreate := validPayment()
 	resty.R().SetBody(*paymentToCreate).Post(address)
@@ -192,7 +179,6 @@ func Test_Put_Payment_By_ID_Returns_Successfully(t *testing.T) {
 }
 
 func Test_Put_Payment_By_ID_Returns_Failure_For_No_Change(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
 	paymentToCreate := validPayment()
 	resty.R().SetBody(*paymentToCreate).Post(address)
@@ -204,7 +190,6 @@ func Test_Put_Payment_By_ID_Returns_Failure_For_No_Change(t *testing.T) {
 }
 
 func Test_Put_Payment_By_ID_Returns_Failure_For_Non_Existent_Payment(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	payment := validPayment()
 	address := fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), payment.ID)
 	resp, err := resty.R().SetBody(payment).Put(address)
@@ -213,7 +198,6 @@ func Test_Put_Payment_By_ID_Returns_Failure_For_Non_Existent_Payment(t *testing.
 }
 
 func Test_Put_Payment_By_ID_Returns_Failure_For_Bad_Request(t *testing.T) {
-	testhelpers.FullStackTest(t)
 	address := fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), "ohhhhh sh*t")
 	resp, err := resty.R().Put(address)
 	assert.Nil(t, err)
