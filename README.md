@@ -7,14 +7,14 @@ Simple payments resource API complete with design, implementation, automation, l
 - [Final Outputs](#final-outputs-potato)
 - [Design](#design-computer)
   - [Docs](#docs-scroll)
-- [implementation](#implementation)
+- [Implementation](#implementation-weight-lifting-man)
 
 ## Final Outputs :potato:
 
 The final outputs, as specified by the brief, are:
 
-- [design PDF](design/index.pdf)
-- [implemnentation](implementation)
+- [Design PDF](design/index.pdf)
+- [Implementation](implementation)
 
 ### Bonus :gem:
 
@@ -45,3 +45,5 @@ Then run the script using:
     yarn regen-docs # or `npm run regen-docs`
 
 The [docs](docs) dir now contains up-to-date HTML docs based on the [payments.swagger.json](design/payments.swagger.json), and the design dir contains up-to-date PDF and asciidocs.
+
+## Implementation :weight_lifting_man:
