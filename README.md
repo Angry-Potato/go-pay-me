@@ -10,6 +10,7 @@ Simple payments resource API complete with design, implementation, automation, l
 - [Implementation](#implementation-weight_lifting_man)
   - [Building](#building-building_construction)
   - [Testing](#testing-performing_arts)
+  - [Running](#running-zap)
 
 ## Final Outputs :potato:
 
@@ -84,3 +85,23 @@ To execute the full-stack tests, run the make command:
     make docker-compose-test
 
 Success or failure can be seen in the logs output, and in the exit code returned by the command.
+
+### Running :zap:
+
+The following instructions assume you are in the [implementation](implementation) directory.
+
+To run the app, first ensure you have a postgres instance running with a database created.
+
+Set the database ENV variables as you run the make command:
+
+    DB_HOST=postgres DB_PORT=5432 DB_USER=postgres DB_PASSWORD=postgres DB_NAME=payments make test
+
+_**OR**_
+
+To run the app using docker-compose requires no database or environment setup on your part, simply run the make command:
+
+    make docker-compose-up
+
+If the app started successfully, it will log a message indicating it's listening on a given port.
+
+The port can be configured using the `PORT` environment variable.
