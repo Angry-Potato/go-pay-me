@@ -1,4 +1,4 @@
-# Shamelessly taken from https://sohlich.github.io/post/go_makefile/
+# Shamelessly based on https://sohlich.github.io/post/go_makefile/
 GOCMD=go
 DEPCMD=dep
 GOBUILD=$(GOCMD) build
@@ -8,16 +8,21 @@ DEPENSURE=$(DEPCMD) ensure
 IMAGE_NAME=go-pay-me
 BINARY_NAME=app
 BINARY_UNIX=$(BINARY_NAME)_unix
-		
+TEST_ARGS=-v ./...
+COMPOSE_PARANOID_ARGS=--force-recreate --always-recreate-deps --build -V --remove-orphans
+
 all: test build
 build: 
 	$(GOBUILD) -o $(BINARY_NAME) -v
 test: 
-	$(GOTEST) -v -tags=unit ./...
+	$(GOTEST) -tags=unit $(TEST_ARGS)
 test-integration: 
-	$(GOTEST) -v -tags=integration ./... 
+	$(GOTEST) -tags=integration $(TEST_ARGS)
+test-acceptance: 
+	$(GOTEST) -tags=acceptance $(TEST_ARGS)
 test-async:
-	$(GOTEST) -v -tags="unit integration" ./... 
+	$(GOTEST) -tags="unit integration" $(TEST_ARGS)
+test-sync: test-acceptance
 clean: 
 	$(GOCLEAN)
 	rm -f $(BINARY_NAME)
@@ -35,7 +40,7 @@ run-docker-image: build-docker-image
 	docker run --rm $(IMAGE_NAME):latest
 
 docker-compose-up:
-	docker-compose up --force-recreate --always-recreate-deps --build -V --remove-orphans
+	docker-compose up $(COMPOSE_PARANOID_ARGS)
 
 docker-compose-test:
-	docker-compose -f docker-compose.yml -f docker-compose.test.yml up --force-recreate --always-recreate-deps --build -V --remove-orphans --exit-code-from $(IMAGE_NAME)-tests
+	docker-compose -f docker-compose.yml -f docker-compose.test.yml up $(COMPOSE_PARANOID_ARGS) --exit-code-from $(IMAGE_NAME)-tests

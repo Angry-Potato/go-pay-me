@@ -5,7 +5,7 @@ services:
       context: .
       target: test
     entrypoint: /bin/bash
-    command: -c "./wait-for.sh postgres:5432 -t 10 -- ./wait-for.sh go-pay-me:8000 -t 10 -- make test-async"
+    command: -c "./wait-for.sh postgres:5432 -t 10 -- ./wait-for.sh go-pay-me:8000 -t 10 -- make test-async && make test-sync"
     environment:
       - API_HOST=go-pay-me
       - API_PORT=8000
