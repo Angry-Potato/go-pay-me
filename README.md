@@ -76,11 +76,19 @@ To build the docker image containing the production-ready app and its' test stag
 
 The following instructions assume you are in the [implementation](implementation) directory.
 
-To test the app, execute the unit test suite by running the make command:
+Execute the unit test suite by running the make command:
 
     make test
 
-To execute the full-stack tests, run the make command:
+Execute the integration test suite by running the make command (requires having the app up and running separately, and a ready and willing postgres instance):
+
+    API_HOST=localhost API_PORT=8000 DB_HOST=postgres DB_PORT=5432 DB_USER=postgres DB_PASSWORD=postgres DB_NAME=payments make test-integration
+
+Execute the acceptance test suite by running the make command (requires having the app up and running separately):
+
+    API_HOST=localhost API_PORT=8000 make test-acceptance
+
+To execute the all tests (unit, integration, acceptance), run the make command:
 
     make docker-compose-test
 

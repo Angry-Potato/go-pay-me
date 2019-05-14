@@ -1,12 +1,12 @@
+// +build unit
+
 package db
 
 import (
 	"fmt"
-	"os"
 	"regexp"
 	"testing"
 
-	"github.com/Angry-Potato/go-pay-me/implementation/testhelpers"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -54,12 +54,4 @@ func Test_ConnectionString_Returns_URL_If_Url_Not_Empty(t *testing.T) {
 	actual := connectionString(nonEmptyURL, host, port, user, password, database)
 
 	assert.Equal(t, nonEmptyURL, actual)
-}
-
-func Test_Connect(t *testing.T) {
-	testhelpers.FullStackTest(t)
-	url, host, port, user, password, database := "", os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME")
-	resp, err := Connect(url, host, port, user, password, database)
-	assert.Nil(t, err)
-	assert.NotNil(t, resp)
 }

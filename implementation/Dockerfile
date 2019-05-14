@@ -13,8 +13,8 @@ RUN make deps
 
 
 FROM base as test
-ENTRYPOINT [ "make", "test" ]
-
+ENTRYPOINT [ "make" ]
+CMD ["test"]
 
 
 FROM base as builder
