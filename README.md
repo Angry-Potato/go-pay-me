@@ -7,7 +7,8 @@ Simple payments resource API complete with design, implementation, automation, l
 - [Final Outputs](#final-outputs-potato)
 - [Design](#design-computer)
   - [Docs](#docs-scroll)
-- [Implementation](#implementation-weight-lifting-man)
+- [Implementation](#implementation-weight_lifting_man)
+  - [Building](#building-building_construction)
 
 ## Final Outputs :potato:
 
@@ -47,3 +48,24 @@ Then run the script using:
 The [docs](docs) dir now contains up-to-date HTML docs based on the [payments.swagger.json](design/payments.swagger.json), and the design dir contains up-to-date PDF and asciidocs.
 
 ## Implementation :weight_lifting_man:
+
+The implementation directory contains the API implementation in golang. I used [dep](https://golang.github.io/dep/) for dependency management because, in my experience, it is the most reliable dependency management system for golang and I didn't want to waste time fiddling with dependency versions.
+
+The golang app is built, tested, and deployed using a multistage Dockerfile. The production stage of the image was initially `FROM scratch` to be as small as possible but some minimal tooling was required in the image to have the container reliably testable, `prod-test` and `prod` stages are not a good idea because we should test exactly what runs in production, so the production image is based from alpine instead.
+
+There are two docker-compose files:
+
+- [docker-compose.yml](implementation/docker-compose.yml) - used as a way of running the app locally, consists of the app, and a postgres db.
+- [docker-compose.test.yml](implementation/docker-compose.test.yml) - used as a way of full-stack testing the app locally, consists of the app, a tester app, and a postgres db.
+
+### Building :building_construction:
+
+The following instructions assume you are in the [implementation](implementation) directory.
+
+To build the app, generate the `app` binary by running the make command:
+
+    make build
+
+To build the docker image containing the production-ready app and its' test stage, run the make command:
+
+    make build-docker-image
