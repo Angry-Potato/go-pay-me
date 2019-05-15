@@ -29,7 +29,7 @@ func Test_HTTP_Restful_Correctness(t *testing.T) {
 
 		deleteAll(t, address)
 
-		t.Run("get payments returns empty list", func(t *testing.T) {
+		t.Run("GET payments returns empty list", func(t *testing.T) {
 			allPayments := []payments.Payment{}
 			resp, err := resty.R().SetResult(&allPayments).Get(address)
 			assert.Nil(t, err)
@@ -37,13 +37,13 @@ func Test_HTTP_Restful_Correctness(t *testing.T) {
 			assert.Empty(t, allPayments)
 		})
 
-		t.Run("delete payments returns success", func(t *testing.T) {
+		t.Run("DELETE payments returns success", func(t *testing.T) {
 			resp, err := resty.R().Delete(address)
 			assert.Nil(t, err)
 			assert.Equal(t, 200, resp.StatusCode())
 		})
 
-		t.Run("put payments returns success", func(t *testing.T) {
+		t.Run("PUT payments returns success", func(t *testing.T) {
 			allPayments := []payments.Payment{
 				*validPayment(),
 				*validPayment(),
@@ -69,7 +69,7 @@ func Test_HTTP_Restful_Correctness(t *testing.T) {
 		deleteAll(t, address)
 		createAll(t, address, initialPayments)
 
-		t.Run("get payments returns all payments", func(t *testing.T) {
+		t.Run("GET payments returns all payments", func(t *testing.T) {
 			allPayments := []payments.Payment{}
 			resp, err := resty.R().SetResult(&allPayments).Get(address)
 			assert.Nil(t, err)
@@ -77,7 +77,7 @@ func Test_HTTP_Restful_Correctness(t *testing.T) {
 			assert.Equal(t, initialPayments, allPayments)
 		})
 
-		t.Run("put same payments returns success", func(t *testing.T) {
+		t.Run("PUT same payments returns success", func(t *testing.T) {
 			allNewPayments := []payments.Payment{}
 			resp, err := resty.R().SetResult(&allNewPayments).SetBody(initialPayments).Put(address)
 			assert.Nil(t, err)
@@ -85,7 +85,7 @@ func Test_HTTP_Restful_Correctness(t *testing.T) {
 			assert.Equal(t, initialPayments, allNewPayments)
 		})
 
-		t.Run("put new payments returns success", func(t *testing.T) {
+		t.Run("PUT new payments returns success", func(t *testing.T) {
 			newPayments := []payments.Payment{
 				*validPayment(),
 				*validPayment(),
@@ -100,7 +100,7 @@ func Test_HTTP_Restful_Correctness(t *testing.T) {
 			assert.Equal(t, newPayments, allNewPayments)
 		})
 
-		t.Run("delete payments returns success", func(t *testing.T) {
+		t.Run("DELETE payments returns success", func(t *testing.T) {
 			resp, err := resty.R().Delete(address)
 			assert.Nil(t, err)
 			assert.Equal(t, 200, resp.StatusCode())
