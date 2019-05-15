@@ -5,15 +5,14 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/Angry-Potato/go-pay-me/implementation/payments"
-
 	"github.com/Angry-Potato/go-pay-me/implementation/db"
+	"github.com/Angry-Potato/go-pay-me/implementation/schema"
 	"github.com/Angry-Potato/go-pay-me/implementation/web"
 	"github.com/jinzhu/gorm"
 )
 
 func main() {
-	DB, err := initDB(&payments.Payment{})
+	DB, err := initDB(&schema.Payment{}, &schema.PaymentAttributes{})
 
 	if err != nil {
 		log.Fatalf("Error initialising database: %s", err.Error())
@@ -45,6 +44,8 @@ func initDB(models ...interface{}) (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	return DB.AutoMigrate(models...), nil
+	DB = DB.AutoMigrate(models...)
+	DB.Model(&schema.PaymentAttributes{}).AddForeignKey("internal_payment_id", "payments(id)", "CASCADE", "CASCADE")
+	DB.LogMode(true)
+	return DB, nil
 }

@@ -1,6 +1,6 @@
 // +build unit
 
-package payments
+package schema
 
 import (
 	"testing"
@@ -15,6 +15,7 @@ func validPayment() *Payment {
 		Type:           "Payment",
 		Version:        0,
 		OrganisationID: uuid.New().String(),
+		Attributes:     PaymentAttributes{},
 	}
 }
 

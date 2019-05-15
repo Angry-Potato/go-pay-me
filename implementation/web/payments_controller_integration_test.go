@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Angry-Potato/go-pay-me/implementation/payments"
+	"github.com/Angry-Potato/go-pay-me/implementation/schema"
 	"github.com/google/uuid"
 
 	"github.com/Angry-Potato/go-pay-me/implementation/testhelpers"
@@ -14,29 +14,30 @@ import (
 	"gopkg.in/resty.v1"
 )
 
-func validPayment() *payments.Payment {
-	return &payments.Payment{
+func validPayment() *schema.Payment {
+	return &schema.Payment{
 		ID:             uuid.New().String(),
 		Type:           "Payment",
 		Version:        0,
 		OrganisationID: uuid.New().String(),
+		Attributes:     schema.PaymentAttributes{},
 	}
 }
 
 func Test_Get_Payments_Returns_Successfully(t *testing.T) {
 	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
-	allPayments := []payments.Payment{}
+	allPayments := []schema.Payment{}
 	resp, err := resty.R().SetResult(&allPayments).Get(address)
 	assert.Nil(t, err)
 	assert.Equal(t, 200, resp.StatusCode())
 	assert.NotEmpty(t, resp.String())
-	assert.IsType(t, []payments.Payment{}, allPayments)
+	assert.IsType(t, []schema.Payment{}, allPayments)
 }
 
 func Test_Post_Payment_Returns_Successfully(t *testing.T) {
 	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
 	paymentToCreate := validPayment()
-	createdPayment := &payments.Payment{}
+	createdPayment := &schema.Payment{}
 	resp, err := resty.R().SetBody(*paymentToCreate).SetResult(&createdPayment).Post(address)
 	assert.Nil(t, err)
 	assert.Equal(t, 201, resp.StatusCode())
@@ -83,25 +84,25 @@ func Test_Delete_Payments_Returns_Successfully(t *testing.T) {
 
 func Test_Put_Payments_Returns_Successfully(t *testing.T) {
 	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
-	allPayments := []*payments.Payment{
+	allPayments := []*schema.Payment{
 		validPayment(),
 		validPayment(),
 		validPayment(),
 		validPayment(),
 	}
-	allNewPayments := []payments.Payment{}
+	allNewPayments := []schema.Payment{}
 	resp, err := resty.R().SetResult(&allNewPayments).SetBody(allPayments).Put(address)
 	assert.Nil(t, err)
 	assert.Equal(t, 200, resp.StatusCode())
 	assert.NotEmpty(t, resp.String())
-	assert.IsType(t, []payments.Payment{}, allNewPayments)
+	assert.IsType(t, []schema.Payment{}, allNewPayments)
 }
 
 func Test_Put_Payments_Returns_Failure_For_Single_Bad_Egg(t *testing.T) {
 	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
 	badEgg := validPayment()
 	badEgg.ID = "oh no!"
-	allPayments := []*payments.Payment{
+	allPayments := []*schema.Payment{
 		validPayment(),
 		validPayment(),
 		validPayment(),
@@ -117,7 +118,7 @@ func Test_Get_Payment_By_ID_Returns_Successfully(t *testing.T) {
 	address := fmt.Sprintf("%s/payments", testhelpers.APIAddress(t))
 	paymentToCreate := validPayment()
 	resty.R().SetBody(*paymentToCreate).Post(address)
-	foundPayment := payments.Payment{}
+	foundPayment := schema.Payment{}
 	address = fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), paymentToCreate.ID)
 	resp, err := resty.R().SetResult(&foundPayment).Get(address)
 	assert.Nil(t, err)
@@ -171,7 +172,7 @@ func Test_Put_Payment_By_ID_Returns_Successfully(t *testing.T) {
 	resty.R().SetBody(*paymentToCreate).Post(address)
 	address = fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), paymentToCreate.ID)
 	paymentToCreate.Version = 222
-	updatedPayment := &payments.Payment{}
+	updatedPayment := &schema.Payment{}
 	resp, err := resty.R().SetBody(paymentToCreate).SetResult(updatedPayment).Put(address)
 	assert.Nil(t, err)
 	assert.Equal(t, 200, resp.StatusCode())

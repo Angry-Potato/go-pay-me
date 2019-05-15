@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Angry-Potato/go-pay-me/implementation/payments"
+	"github.com/Angry-Potato/go-pay-me/implementation/schema"
 	"github.com/ant0ine/go-json-rest/rest"
 	"github.com/jinzhu/gorm"
 )
@@ -25,7 +26,7 @@ func AllPayments(DB *gorm.DB) func(w rest.ResponseWriter, r *rest.Request) {
 // CreatePayment handler
 func CreatePayment(DB *gorm.DB) func(w rest.ResponseWriter, r *rest.Request) {
 	return func(w rest.ResponseWriter, r *rest.Request) {
-		payment := payments.Payment{}
+		payment := schema.Payment{}
 		if err := r.DecodeJsonPayload(&payment); err != nil {
 			rest.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -56,14 +57,14 @@ func DeleteAllPayments(DB *gorm.DB) func(w rest.ResponseWriter, r *rest.Request)
 		}
 
 		w.WriteHeader(http.StatusOK)
-		w.WriteJson(`{}`)
+		w.WriteJson([]schema.Payment{})
 	}
 }
 
 // SetAllPayments handler
 func SetAllPayments(DB *gorm.DB) func(w rest.ResponseWriter, r *rest.Request) {
 	return func(w rest.ResponseWriter, r *rest.Request) {
-		newPayments := []payments.Payment{}
+		newPayments := []schema.Payment{}
 		if err := r.DecodeJsonPayload(&newPayments); err != nil {
 			rest.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -125,7 +126,6 @@ func DeletePayment(DB *gorm.DB) func(w rest.ResponseWriter, r *rest.Request) {
 			return
 		}
 		w.WriteHeader(http.StatusOK)
-		w.WriteJson(`{}`)
 	}
 }
 
@@ -133,7 +133,7 @@ func DeletePayment(DB *gorm.DB) func(w rest.ResponseWriter, r *rest.Request) {
 func UpdatePayment(DB *gorm.DB) func(w rest.ResponseWriter, r *rest.Request) {
 	return func(w rest.ResponseWriter, r *rest.Request) {
 		ID := r.PathParam("ID")
-		payment := payments.Payment{}
+		payment := schema.Payment{}
 		if err := r.DecodeJsonPayload(&payment); err != nil {
 			rest.Error(w, err.Error(), http.StatusBadRequest)
 			return

@@ -77,3 +77,4 @@ if [ "$WAITFORHOST" = "" -o "$WAITFORPORT" = "" ]; then
 fi
 echo "waiting for $WAITFORHOST:$WAITFORPORT"
 wait_for "$@"
+sleep 1

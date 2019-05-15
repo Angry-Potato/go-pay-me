@@ -1,4 +1,4 @@
-package payments
+package schema
 
 import (
 	"errors"
@@ -6,14 +6,15 @@ import (
 	"regexp"
 )
 
-var knownTypes = []string{"Payment"}
+var types = []string{"Payment"}
 
 // Payment resource
 type Payment struct {
-	ID             string `json:"id"`
-	Type           string `json:"type"`
-	Version        int64  `json:"version"`
-	OrganisationID string `json:"organisation_id"`
+	ID             string            `json:"id"`
+	Type           string            `json:"type"`
+	Version        int64             `json:"version"`
+	OrganisationID string            `json:"organisation_id"`
+	Attributes     PaymentAttributes `gorm:"foreignkey:InternalPaymentID" json:"attributes"`
 }
 
 // Validate a payment resource
@@ -46,7 +47,7 @@ func ValidateID(ID string) error {
 }
 
 func isKnownType(alienType string) bool {
-	for _, knownType := range knownTypes {
+	for _, knownType := range types {
 		if knownType == alienType {
 			return true
 		}
