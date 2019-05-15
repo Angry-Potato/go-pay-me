@@ -74,7 +74,9 @@ func Test_SetAll_Returns_Inserted_Payments(t *testing.T) {
 	}
 	newPayments, err := SetAll(DB, allPayments)
 	assert.Nil(t, err)
-	assert.ElementsMatch(t, allPayments, newPayments)
+	for _, newPayment := range allPayments {
+		assert.Contains(t, newPayments, newPayment)
+	}
 }
 
 func Test_SetAll_Returns_ValidationError_If_Any_Payments_Are_Invalid(t *testing.T) {
