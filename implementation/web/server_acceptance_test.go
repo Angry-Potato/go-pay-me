@@ -141,6 +141,21 @@ func Test_HTTP_Restful_Correctness(t *testing.T) {
 			assert.Equal(t, futurePayment, foundPayment)
 		})
 
+		t.Run("PUT payment by ID is successful for existing payment", func(t *testing.T) {
+			newVersion := int64(222)
+			futurePayment.Version = newVersion
+			updatedPayment := &payments.Payment{}
+			resp, err := resty.R().SetBody(futurePayment).SetResult(updatedPayment).Put(fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), futurePayment.ID))
+			assert.Nil(t, err)
+			assert.Equal(t, 200, resp.StatusCode())
+			assert.Equal(t, futurePayment, *updatedPayment)
+			foundPayment := payments.Payment{}
+			resp, err = resty.R().SetResult(&foundPayment).Get(fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), futurePayment.ID))
+			assert.Nil(t, err)
+			assert.Equal(t, 200, resp.StatusCode())
+			assert.Equal(t, newVersion, foundPayment.Version)
+		})
+
 		t.Run("DELETE payments is successful", func(t *testing.T) {
 			resp, err := resty.R().Delete(address)
 			assert.Nil(t, err)
