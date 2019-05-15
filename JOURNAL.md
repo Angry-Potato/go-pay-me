@@ -61,3 +61,11 @@ I moved the swagger2pdf tool out to a separate repo, it's really a separate tool
 Went a bit nuts with the emoji's in the readme. Hopefully it's received as playful rather than irritating.
 
 Began separating out unit / integration / acceptance tests because I want to be able to verify complete correctness of the app. It's hard to assert your `DELETE` operation deletes all resources when another test has just `POST`ed some new ones. To do this, the acceptance suite will run in isolation, in series, after the asynchronous (unit & integration) tests. This could be made quicker by upping two instances of the app to test async & sync suites in parallel but I feel that's overkill for this little project, and the logging output would be confusing at best.
+
+## 15th May
+
+I am coming to the end of the project now, and I have some regrets.
+
+I should have started by planning the work, and tracking it in trello / github issues. This would have demonstrated responsible workflow management skills, of which I guess I have none!
+
+I should have used testing frameworks like ginkgo & gomega to give me niceties like setup & teardown. What stopped me from using them was past experience - I found them to be tricky to set up - but this should not have stopped me, after all I am a far better golanger than I was back then.
