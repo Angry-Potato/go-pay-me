@@ -25,7 +25,7 @@ func APIAddress(t *testing.T) string {
 // DBConnection gets a DB connection
 func DBConnection(t *testing.T, models ...interface{}) *gorm.DB {
 	t.Helper()
-	DB, err := db.Initialise(&schema.Payment{}, &schema.PaymentAttributes{})
+	DB, err := db.Initialise(&schema.Payment{}, &schema.PaymentAttributes{}, &schema.Party{})
 	assert.Nil(t, err)
 	assert.NotNil(t, DB)
 	DB.LogMode(false)

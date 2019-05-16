@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	DB, err := db.Initialise(&schema.Payment{}, &schema.PaymentAttributes{})
+	DB, err := db.Initialise(&schema.Payment{}, &schema.PaymentAttributes{}, &schema.Party{})
 
 	if err != nil {
 		log.Fatalf("Error initialising database: %s", err.Error())

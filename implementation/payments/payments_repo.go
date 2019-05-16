@@ -23,7 +23,7 @@ func (e *ValidationError) Error() string {
 // All payments
 func All(DB *gorm.DB) ([]schema.Payment, error) {
 	allPayments := []schema.Payment{}
-	err := DB.Preload("Attributes").Find(&allPayments).Error
+	err := DB.Preload("Attributes").Preload("Attributes.BeneficiaryParty").Find(&allPayments).Error
 	return allPayments, err
 }
 
@@ -31,8 +31,14 @@ func All(DB *gorm.DB) ([]schema.Payment, error) {
 func Create(DB *gorm.DB, payment *schema.Payment) (*schema.Payment, error) {
 	validationErrors := schema.Validate(payment)
 	if len(validationErrors) == 0 {
-		if err := DB.Create(&payment).Error; err != nil {
-			return nil, err
+		if createErr := DB.Create(&payment).Error; createErr != nil {
+			if strings.Contains(createErr.Error(), "unique constraint") {
+				if saveErr := DB.Save(&payment).Error; saveErr != nil {
+					return nil, saveErr
+				}
+			} else {
+				return nil, createErr
+			}
 		}
 		return payment, nil
 	}
@@ -98,7 +104,7 @@ func Get(DB *gorm.DB, ID string) (*schema.Payment, error) {
 	}
 
 	payment := schema.Payment{}
-	if err = DB.Preload("Attributes").Where(&schema.Payment{ID: ID}).First(&payment).Error; err != nil {
+	if err = DB.Preload("Attributes").Preload("Attributes.BeneficiaryParty").Where(&schema.Payment{ID: ID}).First(&payment).Error; err != nil {
 		return nil, err
 	}
 	return &payment, nil
@@ -139,8 +145,12 @@ func Update(DB *gorm.DB, ID string, payment *schema.Payment) (*schema.Payment, e
 	if *existingPayment == *payment {
 		return nil, nil
 	}
-
-	payment.Attributes.ID = existingPayment.Attributes.ID
+	if payment.Attributes.ID == 0 {
+		payment.Attributes.ID = existingPayment.Attributes.ID
+	}
+	if payment.Attributes.BeneficiaryPartyID == 0 {
+		payment.Attributes.BeneficiaryPartyID = existingPayment.Attributes.BeneficiaryPartyID
+	}
 	DB = DB.Save(payment)
 	if err = DB.Error; err != nil {
 		return nil, err
