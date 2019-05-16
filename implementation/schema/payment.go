@@ -1,4 +1,4 @@
-package payments
+package schema
 
 import (
 	"errors"
@@ -6,23 +6,28 @@ import (
 	"regexp"
 )
 
-var knownTypes = []string{"Payment"}
+var types = []string{"Payment"}
 
 // Payment resource
 type Payment struct {
-	ID             string `json:"id"`
-	Type           string `json:"type"`
-	Version        int64  `json:"version"`
-	OrganisationID string `json:"organisation_id"`
+	ID             string            `json:"id"`
+	Type           string            `json:"type"`
+	Version        int64             `json:"version"`
+	OrganisationID string            `json:"organisation_id"`
+	Attributes     PaymentAttributes `gorm:"foreignkey:InternalPaymentID" json:"attributes"`
 }
 
 // Validate a payment resource
 func Validate(payment *Payment) []error {
+	return append(validatePayment(payment), validatePaymentAttributes(&payment.Attributes)...)
+}
+
+func validatePayment(payment *Payment) []error {
 	validationErrors := []error{}
 	if err := ValidateID(payment.ID); err != nil {
 		validationErrors = append(validationErrors, err)
 	}
-	if !isKnownType(payment.Type) {
+	if !contains(types, payment.Type) {
 		validationErrors = append(validationErrors, fmt.Errorf("Unknown payment type: %s", payment.Type))
 	}
 	if payment.Version < 0 {
@@ -45,9 +50,9 @@ func ValidateID(ID string) error {
 	return nil
 }
 
-func isKnownType(alienType string) bool {
-	for _, knownType := range knownTypes {
-		if knownType == alienType {
+func contains(haystack []string, needle string) bool {
+	for _, hay := range haystack {
+		if hay == needle {
 			return true
 		}
 	}

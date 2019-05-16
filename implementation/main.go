@@ -5,15 +5,13 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/Angry-Potato/go-pay-me/implementation/payments"
-
 	"github.com/Angry-Potato/go-pay-me/implementation/db"
+	"github.com/Angry-Potato/go-pay-me/implementation/schema"
 	"github.com/Angry-Potato/go-pay-me/implementation/web"
-	"github.com/jinzhu/gorm"
 )
 
 func main() {
-	DB, err := initDB(&payments.Payment{})
+	DB, err := db.Initialise(&schema.Payment{}, &schema.PaymentAttributes{})
 
 	if err != nil {
 		log.Fatalf("Error initialising database: %s", err.Error())
@@ -30,21 +28,4 @@ func port(envPort string, defaultPort int) int {
 
 	parsedPort, _ := strconv.Atoi(envPort)
 	return parsedPort
-}
-
-func initDB(models ...interface{}) (*gorm.DB, error) {
-	DB, err := db.Connect(
-		os.Getenv("DATABASE_URL"),
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_NAME"),
-	)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return DB.AutoMigrate(models...), nil
 }

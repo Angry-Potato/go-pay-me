@@ -1,12 +1,12 @@
 package payments
 
 import (
-	"errors"
 	"fmt"
-	"log"
 	"strings"
 
+	"github.com/Angry-Potato/go-pay-me/implementation/schema"
 	"github.com/jinzhu/gorm"
+
 	//postgres driver
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
@@ -21,15 +21,15 @@ func (e *ValidationError) Error() string {
 }
 
 // All payments
-func All(DB *gorm.DB) ([]Payment, error) {
-	allPayments := []Payment{}
-	err := DB.Find(&allPayments).Error
+func All(DB *gorm.DB) ([]schema.Payment, error) {
+	allPayments := []schema.Payment{}
+	err := DB.Preload("Attributes").Find(&allPayments).Error
 	return allPayments, err
 }
 
 // Create a new payment
-func Create(DB *gorm.DB, payment *Payment) (*Payment, error) {
-	validationErrors := Validate(payment)
+func Create(DB *gorm.DB, payment *schema.Payment) (*schema.Payment, error) {
+	validationErrors := schema.Validate(payment)
 	if len(validationErrors) == 0 {
 		if err := DB.Create(&payment).Error; err != nil {
 			return nil, err
@@ -42,16 +42,16 @@ func Create(DB *gorm.DB, payment *Payment) (*Payment, error) {
 
 // DeleteAll payments
 func DeleteAll(DB *gorm.DB) error {
-	allPayments := []Payment{}
+	allPayments := []schema.Payment{}
 	err := DB.Delete(&allPayments).Error
 	return err
 }
 
 // SetAll payments
-func SetAll(DB *gorm.DB, payments []Payment) ([]Payment, error) {
+func SetAll(DB *gorm.DB, payments []schema.Payment) ([]schema.Payment, error) {
 	var consolidatedValidation []error
 	for _, payment := range payments {
-		validationErrors := Validate(&payment)
+		validationErrors := schema.Validate(&payment)
 		if len(validationErrors) != 0 {
 			consolidatedValidation = append(consolidatedValidation, consolidateValidationErrors(validationErrors, fmt.Sprintf("Validation errors whilst creating payment with id %s", payment.ID)))
 		}
@@ -64,11 +64,21 @@ func SetAll(DB *gorm.DB, payments []Payment) ([]Payment, error) {
 		if err != nil {
 			return nil, err
 		}
-		count, err := batchInsert(DB, payments)
-		if err != nil {
-			return nil, err
-		} else if count != int64(len(payments)) {
-			return nil, fmt.Errorf("Could only insert %d out of %d", count, len(payments))
+
+		successes := 0
+		errs := []error{}
+		for _, payment := range payments {
+			if _, err = Create(DB, &payment); err != nil {
+				errs = append(errs, err)
+			} else {
+				successes++
+			}
+		}
+
+		if len(errs) != 0 {
+			return nil, consolidateErrors(errs, "Error(s) batch inserting: ")
+		} else if successes != len(payments) {
+			return nil, fmt.Errorf("Could only insert %d out of %d", successes, len(payments))
 		}
 		newPayments, err := All(DB)
 		if err != nil {
@@ -81,14 +91,14 @@ func SetAll(DB *gorm.DB, payments []Payment) ([]Payment, error) {
 }
 
 // Get a payment by ID
-func Get(DB *gorm.DB, ID string) (*Payment, error) {
-	err := ValidateID(ID)
+func Get(DB *gorm.DB, ID string) (*schema.Payment, error) {
+	err := schema.ValidateID(ID)
 	if err != nil {
 		return nil, &ValidationError{err.Error()}
 	}
 
-	payment := Payment{}
-	if err = DB.Where(&Payment{ID: ID}).First(&payment).Error; err != nil {
+	payment := schema.Payment{}
+	if err = DB.Preload("Attributes").Where(&schema.Payment{ID: ID}).First(&payment).Error; err != nil {
 		return nil, err
 	}
 	return &payment, nil
@@ -96,12 +106,12 @@ func Get(DB *gorm.DB, ID string) (*Payment, error) {
 
 // Delete a payment by ID
 func Delete(DB *gorm.DB, ID string) error {
-	err := ValidateID(ID)
+	err := schema.ValidateID(ID)
 	if err != nil {
 		return &ValidationError{err.Error()}
 	}
 
-	DB = DB.Delete(&Payment{ID: ID})
+	DB = DB.Delete(&schema.Payment{ID: ID})
 	if err = DB.Error; err != nil {
 		return err
 	}
@@ -112,24 +122,25 @@ func Delete(DB *gorm.DB, ID string) error {
 }
 
 // Update a payment by ID
-func Update(DB *gorm.DB, ID string, payment *Payment) (*Payment, error) {
-	err := ValidateID(ID)
+func Update(DB *gorm.DB, ID string, payment *schema.Payment) (*schema.Payment, error) {
+	err := schema.ValidateID(ID)
 	if err != nil {
 		return nil, &ValidationError{err.Error()}
 	}
-	errs := Validate(payment)
+	errs := schema.Validate(payment)
 	if len(errs) != 0 {
 		return nil, consolidateValidationErrors(errs, fmt.Sprintf("Validation errors whilst Updating payment %s", payment.ID))
 	}
 
-	exisingPayment, err := Get(DB, ID)
+	existingPayment, err := Get(DB, ID)
 	if err != nil {
 		return nil, err
 	}
-	if *exisingPayment == *payment {
+	if *existingPayment == *payment {
 		return nil, nil
 	}
 
+	payment.Attributes.ID = existingPayment.Attributes.ID
 	DB = DB.Save(payment)
 	if err = DB.Error; err != nil {
 		return nil, err
@@ -140,67 +151,18 @@ func Update(DB *gorm.DB, ID string, payment *Payment) (*Payment, error) {
 	return payment, nil
 }
 
+func consolidateErrors(errs []error, prefix string) error {
+	var errstrings []string
+	for _, err := range errs {
+		errstrings = append(errstrings, err.Error())
+	}
+	return fmt.Errorf("%s: %s", prefix, strings.Join(errstrings, ", "))
+}
+
 func consolidateValidationErrors(errs []error, prefix string) error {
 	var errstrings []string
 	for _, err := range errs {
 		errstrings = append(errstrings, err.Error())
 	}
 	return &ValidationError{fmt.Sprintf("%s: %s", prefix, strings.Join(errstrings, ", "))}
-}
-
-// shamelessly stolen from https://github.com/jinzhu/gorm/issues/255#issuecomment-481159929
-func batchInsert(DB *gorm.DB, objArr []Payment) (int64, error) {
-	// If there is no data, nothing to do.
-	if len(objArr) == 0 {
-		return 0, errors.New("insert a slice length of 0")
-	}
-
-	mainObj := objArr[0]
-	mainScope := DB.NewScope(mainObj)
-	mainFields := mainScope.Fields()
-	quoted := make([]string, 0, len(mainFields))
-	for i := range mainFields {
-		// If primary key has blank value (0 for int, "" for string, nil for interface ...), skip it.
-		// If field is ignore field, skip it.
-		if (mainFields[i].IsPrimaryKey && mainFields[i].IsBlank) || (mainFields[i].IsIgnored) {
-			continue
-		}
-		quoted = append(quoted, mainScope.Quote(mainFields[i].DBName))
-	}
-
-	placeholdersArr := make([]string, 0, len(objArr))
-
-	for _, obj := range objArr {
-		scope := DB.NewScope(obj)
-		fields := scope.Fields()
-		placeholders := make([]string, 0, len(fields))
-		for i := range fields {
-			if (fields[i].IsPrimaryKey && fields[i].IsBlank) || (fields[i].IsIgnored) {
-				continue
-			}
-			var vars interface{}
-			if (fields[i].Name == "CreatedAt" || fields[i].Name == "UpdatedAt") && fields[i].IsBlank {
-				vars = gorm.NowFunc()
-			} else {
-				vars = fields[i].Field.Interface()
-			}
-			placeholders = append(placeholders, mainScope.AddToVars(vars))
-		}
-		placeholdersStr := "(" + strings.Join(placeholders, ", ") + ")"
-		placeholdersArr = append(placeholdersArr, placeholdersStr)
-		// add real variables for the replacement of placeholders' '?' letter later.
-		mainScope.SQLVars = append(mainScope.SQLVars, scope.SQLVars...)
-	}
-	sql := fmt.Sprintf("INSERT INTO %s (%s) VALUES %s",
-		mainScope.QuotedTableName(),
-		strings.Join(quoted, ", "),
-		strings.Join(placeholdersArr, ", "),
-	)
-	log.Println(sql)
-	mainScope.Raw(sql)
-	//Execute and Log
-	if err := mainScope.Exec().DB().Error; err != nil {
-		return 0, err
-	}
-	return mainScope.DB().RowsAffected, nil
 }
