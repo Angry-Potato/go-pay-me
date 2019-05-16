@@ -3,7 +3,6 @@ package schema
 import (
 	"errors"
 	"fmt"
-	"regexp"
 )
 
 var types = []string{"Payment"}
@@ -48,20 +47,4 @@ func ValidateID(ID string) error {
 		return errors.New("ID invalid, must be purely alphanumeric with dashes")
 	}
 	return nil
-}
-
-func contains(haystack []string, needle string) bool {
-	for _, hay := range haystack {
-		if hay == needle {
-			return true
-		}
-	}
-	return false
-}
-
-func isUUID(uuid string) bool {
-	if matches, err := regexp.MatchString("^[a-zA-Z0-9-]+$", uuid); !matches || err != nil {
-		return false
-	}
-	return true
 }
