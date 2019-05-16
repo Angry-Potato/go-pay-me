@@ -10,12 +10,26 @@ import (
 )
 
 func validPayment() *Payment {
+	ID := uuid.New().String()
 	return &Payment{
-		ID:             uuid.New().String(),
+		ID:             ID,
 		Type:           "Payment",
 		Version:        0,
 		OrganisationID: uuid.New().String(),
-		Attributes:     PaymentAttributes{},
+		Attributes: PaymentAttributes{
+			Amount:               "some amount",
+			Currency:             "great",
+			EndToEndReference:    "here it is",
+			NumericReference:     "1245",
+			PaymentID:            "343535",
+			PaymentPurpose:       "stuff",
+			PaymentScheme:        "best",
+			PaymentType:          "Credit",
+			ProcessingDate:       "now",
+			Reference:            "that guy",
+			SchemePaymentSubType: "InternetBanking",
+			SchemePaymentType:    "ImmediatePayment",
+		},
 	}
 }
 
