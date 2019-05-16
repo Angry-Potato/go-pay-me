@@ -69,3 +69,7 @@ I am coming to the end of the project now, and I have some regrets.
 I should have started by planning the work, and tracking it in trello / github issues. This would have demonstrated responsible workflow management skills, of which I guess I have none!
 
 I should have used testing frameworks like ginkgo & gomega to give me niceties like setup & teardown. What stopped me from using them was past experience - I found them to be tricky to set up - but this should not have stopped me, after all I am a far better golanger than I was back then.
+
+## 16th May
+
+Introduced the payment attributes resource, took some serious fiddling and exploratory work with the GORM library but eventually reasonably happy with the implementation. I'm not happy with having the internal payment id field leak out to the consumer layer but it's something I'll have to live with for now. Very happy with relying on the integration and acceptance suites during this big change as they were largely unaffected code-wise whilst still checking the behaviour of the system correctly.
