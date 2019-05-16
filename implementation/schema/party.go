@@ -18,13 +18,21 @@ type Party struct {
 func validateParty(party *Party) []error {
 	validationErrors := []error{}
 	if party.AccountNumber == "" {
-		validationErrors = append(validationErrors, errors.New("AccountNumber cannot be empty."))
+		validationErrors = append(validationErrors, errors.New("AccountNumber cannot be empty"))
 	}
 	if party.BankID == "" {
-		validationErrors = append(validationErrors, errors.New("BankID cannot be empty."))
+		validationErrors = append(validationErrors, errors.New("BankID cannot be empty"))
 	}
 	if party.BankIDCode == "" {
-		validationErrors = append(validationErrors, errors.New("BankIDCode cannot be empty."))
+		validationErrors = append(validationErrors, errors.New("BankIDCode cannot be empty"))
 	}
 	return validationErrors
+}
+
+func isSameParty(partyA *Party, partyB *Party) bool {
+	return partyA != nil &&
+		partyB != nil &&
+		partyA.AccountNumber == partyB.AccountNumber &&
+		partyA.BankID == partyB.BankID &&
+		partyA.BankIDCode == partyB.BankIDCode
 }
