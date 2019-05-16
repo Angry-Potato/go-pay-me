@@ -9,98 +9,98 @@ import (
 )
 
 func Test_validatePaymentAttributes_Returns_Error_When_Amount_Is_Invalid(t *testing.T) {
-	invalidPayment := validPayment()
-	invalidPayment.Attributes.Amount = ".0.0"
-	errs := validatePaymentAttributes(&invalidPayment.Attributes)
+	attributes := ValidPaymentAttributes()
+	attributes.Amount = ".0.0"
+	errs := validatePaymentAttributes(&attributes)
 	assert.NotEmpty(t, errs)
 }
 
 func Test_validatePaymentAttributes_Returns_Error_When_Currency_Is_Empty(t *testing.T) {
-	invalidPayment := validPayment()
-	invalidPayment.Attributes.Currency = ""
-	errs := validatePaymentAttributes(&invalidPayment.Attributes)
+	attributes := ValidPaymentAttributes()
+	attributes.Currency = ""
+	errs := validatePaymentAttributes(&attributes)
 	assert.NotEmpty(t, errs)
 }
 
 func Test_validatePaymentAttributes_Returns_Error_When_EndToEndReference_Is_Empty(t *testing.T) {
-	invalidPayment := validPayment()
-	invalidPayment.Attributes.EndToEndReference = ""
-	errs := validatePaymentAttributes(&invalidPayment.Attributes)
+	attributes := ValidPaymentAttributes()
+	attributes.EndToEndReference = ""
+	errs := validatePaymentAttributes(&attributes)
 	assert.NotEmpty(t, errs)
 }
 
 func Test_validatePaymentAttributes_Returns_Error_When_NumericReference_Is_Empty(t *testing.T) {
-	invalidPayment := validPayment()
-	invalidPayment.Attributes.NumericReference = ""
-	errs := validatePaymentAttributes(&invalidPayment.Attributes)
+	attributes := ValidPaymentAttributes()
+	attributes.NumericReference = ""
+	errs := validatePaymentAttributes(&attributes)
 	assert.NotEmpty(t, errs)
 }
 
 func Test_validatePaymentAttributes_Returns_Error_When_PaymentID_Is_Empty(t *testing.T) {
-	invalidPayment := validPayment()
-	invalidPayment.Attributes.PaymentID = ""
-	errs := validatePaymentAttributes(&invalidPayment.Attributes)
+	attributes := ValidPaymentAttributes()
+	attributes.PaymentID = ""
+	errs := validatePaymentAttributes(&attributes)
 	assert.NotEmpty(t, errs)
 }
 
 func Test_validatePaymentAttributes_Returns_Error_When_PaymentPurpose_Is_Empty(t *testing.T) {
-	invalidPayment := validPayment()
-	invalidPayment.Attributes.PaymentPurpose = ""
-	errs := validatePaymentAttributes(&invalidPayment.Attributes)
+	attributes := ValidPaymentAttributes()
+	attributes.PaymentPurpose = ""
+	errs := validatePaymentAttributes(&attributes)
 	assert.NotEmpty(t, errs)
 }
 
 func Test_validatePaymentAttributes_Returns_Error_When_PaymentScheme_Is_Empty(t *testing.T) {
-	invalidPayment := validPayment()
-	invalidPayment.Attributes.PaymentScheme = ""
-	errs := validatePaymentAttributes(&invalidPayment.Attributes)
+	attributes := ValidPaymentAttributes()
+	attributes.PaymentScheme = ""
+	errs := validatePaymentAttributes(&attributes)
 	assert.NotEmpty(t, errs)
 }
 
 func Test_validatePaymentAttributes_Returns_Error_When_ProcessingDate_Is_Empty(t *testing.T) {
-	invalidPayment := validPayment()
-	invalidPayment.Attributes.ProcessingDate = ""
-	errs := validatePaymentAttributes(&invalidPayment.Attributes)
+	attributes := ValidPaymentAttributes()
+	attributes.ProcessingDate = ""
+	errs := validatePaymentAttributes(&attributes)
 	assert.NotEmpty(t, errs)
 }
 
 func Test_validatePaymentAttributes_Returns_Error_When_Reference_Is_Empty(t *testing.T) {
-	invalidPayment := validPayment()
-	invalidPayment.Attributes.Reference = ""
-	errs := validatePaymentAttributes(&invalidPayment.Attributes)
+	attributes := ValidPaymentAttributes()
+	attributes.Reference = ""
+	errs := validatePaymentAttributes(&attributes)
 	assert.NotEmpty(t, errs)
 }
 
 func Test_validatePaymentAttributes_Returns_Error_When_PaymentType_Is_Unknown(t *testing.T) {
-	invalidPayment := validPayment()
-	invalidPayment.Attributes.PaymentType = "oh dear, what's happened here?"
-	errs := validatePaymentAttributes(&invalidPayment.Attributes)
+	attributes := ValidPaymentAttributes()
+	attributes.PaymentType = "oh dear, what's happened here?"
+	errs := validatePaymentAttributes(&attributes)
 	assert.NotEmpty(t, errs)
 }
 
 func Test_validatePaymentAttributes_Returns_Error_When_SchemePaymentSubType_Is_Unknown(t *testing.T) {
-	invalidPayment := validPayment()
-	invalidPayment.Attributes.SchemePaymentSubType = "oh dear, what's happened here?"
-	errs := validatePaymentAttributes(&invalidPayment.Attributes)
+	attributes := ValidPaymentAttributes()
+	attributes.SchemePaymentSubType = "oh dear, what's happened here?"
+	errs := validatePaymentAttributes(&attributes)
 	assert.NotEmpty(t, errs)
 }
 
 func Test_validatePaymentAttributes_Returns_Error_When_SchemePaymentType_Is_Unknown(t *testing.T) {
-	invalidPayment := validPayment()
-	invalidPayment.Attributes.SchemePaymentType = "oh dear, what's happened here?"
-	errs := validatePaymentAttributes(&invalidPayment.Attributes)
+	attributes := ValidPaymentAttributes()
+	attributes.SchemePaymentType = "oh dear, what's happened here?"
+	errs := validatePaymentAttributes(&attributes)
 	assert.NotEmpty(t, errs)
 }
 
 func Test_validatePaymentAttributes_Returns_Error_When_InternalPaymentID_Is_Not_A_UUID(t *testing.T) {
-	invalidPayment := validPayment()
-	invalidPayment.Attributes.InternalPaymentID = "nope, definitely not."
-	errs := validatePaymentAttributes(&invalidPayment.Attributes)
+	attributes := ValidPaymentAttributes()
+	attributes.InternalPaymentID = "nope, definitely not."
+	errs := validatePaymentAttributes(&attributes)
 	assert.NotEmpty(t, errs)
 }
 
 func Test_validatePaymentAttributes_Returns_No_Error_When_Are_Valid(t *testing.T) {
-	validPaymentResource := validPayment()
-	errs := validatePaymentAttributes(&validPaymentResource.Attributes)
+	attributes := ValidPaymentAttributes()
+	errs := validatePaymentAttributes(&attributes)
 	assert.Empty(t, errs)
 }
