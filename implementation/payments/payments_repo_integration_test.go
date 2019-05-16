@@ -5,21 +5,35 @@ package payments
 import (
 	"testing"
 
-	"github.com/jinzhu/gorm"
 	"github.com/google/uuid"
+	"github.com/jinzhu/gorm"
 
-	"github.com/Angry-Potato/go-pay-me/implementation/testhelpers"
 	"github.com/Angry-Potato/go-pay-me/implementation/schema"
+	"github.com/Angry-Potato/go-pay-me/implementation/testhelpers"
 	"github.com/stretchr/testify/assert"
 )
 
 func validPayment() *schema.Payment {
+	ID := uuid.New().String()
 	return &schema.Payment{
-		ID:             uuid.New().String(),
+		ID:             ID,
 		Type:           "Payment",
 		Version:        0,
 		OrganisationID: uuid.New().String(),
-		Attributes:     schema.PaymentAttributes{},
+		Attributes: schema.PaymentAttributes{
+			Amount:               "some amount",
+			Currency:             "great",
+			EndToEndReference:    "here it is",
+			NumericReference:     "1245",
+			PaymentID:            "343535",
+			PaymentPurpose:       "stuff",
+			PaymentScheme:        "best",
+			PaymentType:          "Credit",
+			ProcessingDate:       "now",
+			Reference:            "that guy",
+			SchemePaymentSubType: "InternetBanking",
+			SchemePaymentType:    "ImmediatePayment",
+		},
 	}
 }
 
@@ -61,6 +75,17 @@ func Test_Create_Returns_ValidationError_When_Payment_Invalid(t *testing.T) {
 	assert.True(t, ok)
 }
 
+func Test_Create_Returns_ValidationError_When_PaymentAttributes_Invalid(t *testing.T) {
+	DB := testhelpers.DBConnection(t, &schema.Payment{})
+	incomingPayment := validPayment()
+	incomingPayment.Attributes.PaymentType = "Something unexpected!"
+	createdPayment, err := Create(DB, incomingPayment)
+	assert.NotNil(t, err)
+	assert.Nil(t, createdPayment)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+}
+
 func Test_DeleteAll_Deletes_All_Payments(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
 	Create(DB, validPayment())
@@ -86,8 +111,18 @@ func Test_SetAll_Returns_Inserted_Payments(t *testing.T) {
 	}
 	newPayments, err := SetAll(DB, allPayments)
 	assert.Nil(t, err)
-	for _, newPayment := range allPayments {
-		assert.Contains(t, newPayments, newPayment)
+	assert.NotEmpty(t, allPayments)
+	assert.NotEmpty(t, newPayments)
+	for _, payment := range allPayments {
+		found := false
+		for _, newPayment := range newPayments {
+			if newPayment.ID == payment.ID {
+				found = true
+			}
+		}
+		if !found {
+			t.Fail()
+		}
 	}
 }
 
@@ -102,6 +137,25 @@ func Test_SetAll_Returns_ValidationError_If_Any_Payments_Are_Invalid(t *testing.
 		*validPayment(),
 		*validPayment(),
 		*badEgg,
+	}
+	newPayments, err := SetAll(DB, allPayments)
+	assert.NotNil(t, err)
+	assert.Empty(t, newPayments)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+	assert.Contains(t, err.Error(), badEgg.ID)
+}
+
+func Test_SetAll_Returns_ValidationError_If_Any_PaymentAttributes_Are_Invalid(t *testing.T) {
+	DB := testhelpers.DBConnection(t, &schema.Payment{})
+	badEgg := validPayment()
+	badEgg.Attributes.SchemePaymentSubType = "Something unexpected!"
+	allPayments := []schema.Payment{
+		*validPayment(),
+		*validPayment(),
+		*badEgg,
+		*validPayment(),
+		*validPayment(),
 	}
 	newPayments, err := SetAll(DB, allPayments)
 	assert.NotNil(t, err)
@@ -165,6 +219,7 @@ func Test_Update_Returns_Updated_Payment_When_Payment_Exists_And_Valid_Update(t 
 	incomingPayment := validPayment()
 	Create(DB, incomingPayment)
 	incomingPayment.Version = 999
+	incomingPayment.Attributes.Amount = "some new amount"
 	newPayment, err := Update(DB, incomingPayment.ID, incomingPayment)
 	assert.Nil(t, err)
 	assert.Equal(t, incomingPayment, newPayment)
@@ -199,6 +254,17 @@ func Test_Update_Returns_ValidationError_When_Payment_Update_Invalid(t *testing.
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
 	payment := validPayment()
 	payment.Version = -22
+	newPayment, err := Update(DB, payment.ID, payment)
+	assert.NotNil(t, err)
+	assert.Nil(t, newPayment)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+}
+
+func Test_Update_Returns_ValidationError_When_PaymentAttributes_Update_Invalid(t *testing.T) {
+	DB := testhelpers.DBConnection(t, &schema.Payment{})
+	payment := validPayment()
+	payment.Attributes.SchemePaymentType = "garbage"
 	newPayment, err := Update(DB, payment.ID, payment)
 	assert.NotNil(t, err)
 	assert.Nil(t, newPayment)

@@ -140,13 +140,8 @@ func Update(DB *gorm.DB, ID string, payment *schema.Payment) (*schema.Payment, e
 		return nil, nil
 	}
 
-	existingPayment.ID = payment.ID
-	existingPayment.Type = payment.Type
-	existingPayment.Version = payment.Version
-	existingPayment.OrganisationID = payment.OrganisationID
-	existingPayment.Attributes = payment.Attributes
-	//Preload("Attributes")
-	DB = DB.Save(existingPayment).P
+	payment.Attributes.ID = existingPayment.Attributes.ID
+	DB = DB.Save(payment)
 	if err = DB.Error; err != nil {
 		return nil, err
 	}
