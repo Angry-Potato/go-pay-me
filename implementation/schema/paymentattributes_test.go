@@ -100,7 +100,7 @@ func Test_validatePaymentAttributes_Returns_Error_When_InternalPaymentID_Is_Not_
 }
 
 func Test_validatePaymentAttributes_Returns_No_Error_When_Are_Valid(t *testing.T) {
-	invalidPayment := validPayment()
-	errs := validatePaymentAttributes(&invalidPayment.Attributes)
+	validPaymentResource := validPayment()
+	errs := validatePaymentAttributes(&validPaymentResource.Attributes)
 	assert.Empty(t, errs)
 }
