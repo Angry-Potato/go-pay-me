@@ -3,13 +3,13 @@ package db
 import (
 	"os"
 
-	"github.com/Angry-Potato/go-pay-me/implementation/schema"
 	"github.com/jinzhu/gorm"
 
 	//postgres driver
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
+// Initialise the db with the given models to automigrate
 func Initialise(models ...interface{}) (*gorm.DB, error) {
 	DB, err := Connect(
 		os.Getenv("DATABASE_URL"),
@@ -24,10 +24,6 @@ func Initialise(models ...interface{}) (*gorm.DB, error) {
 		return nil, err
 	}
 	DB = DB.AutoMigrate(models...)
-
-	//this is bad, where should I do this?
-	DB.Model(&schema.PaymentAttributes{}).AddForeignKey("internal_payment_id", "payments(id)", "CASCADE", "CASCADE")
-	DB.Model(&schema.PaymentAttributes{}).AddForeignKey("beneficiary_party_id", "parties(id)", "SET NULL", "CASCADE")
 
 	DB.LogMode(true)
 	return DB, nil
