@@ -29,7 +29,8 @@ func validateParty(party *Party) []error {
 	return validationErrors
 }
 
-func isSameParty(partyA *Party, partyB *Party) bool {
+// IsSameParty checks equality of party key properties
+func IsSameParty(partyA *Party, partyB *Party) bool {
 	return partyA != nil &&
 		partyB != nil &&
 		partyA.AccountNumber == partyB.AccountNumber &&
