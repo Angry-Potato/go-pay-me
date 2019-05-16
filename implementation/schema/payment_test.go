@@ -17,7 +17,7 @@ func validPayment() *Payment {
 		Version:        0,
 		OrganisationID: uuid.New().String(),
 		Attributes: PaymentAttributes{
-			Amount:               "some amount",
+			Amount:               "200.10",
 			Currency:             "great",
 			EndToEndReference:    "here it is",
 			NumericReference:     "1245",

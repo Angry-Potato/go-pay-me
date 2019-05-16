@@ -21,7 +21,7 @@ func validPayment() *schema.Payment {
 		Version:        0,
 		OrganisationID: uuid.New().String(),
 		Attributes: schema.PaymentAttributes{
-			Amount:               "some amount",
+			Amount:               "10.50",
 			Currency:             "great",
 			EndToEndReference:    "here it is",
 			NumericReference:     "1245",
@@ -219,7 +219,7 @@ func Test_Update_Returns_Updated_Payment_When_Payment_Exists_And_Valid_Update(t 
 	incomingPayment := validPayment()
 	Create(DB, incomingPayment)
 	incomingPayment.Version = 999
-	incomingPayment.Attributes.Amount = "some new amount"
+	incomingPayment.Attributes.Amount = "55.90"
 	newPayment, err := Update(DB, incomingPayment.ID, incomingPayment)
 	assert.Nil(t, err)
 	assert.Equal(t, incomingPayment, newPayment)

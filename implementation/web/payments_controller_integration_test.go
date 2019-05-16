@@ -22,7 +22,7 @@ func validPayment() *schema.Payment {
 		Version:        0,
 		OrganisationID: uuid.New().String(),
 		Attributes: schema.PaymentAttributes{
-			Amount:               "some amount",
+			Amount:               "1",
 			Currency:             "great",
 			EndToEndReference:    "here it is",
 			NumericReference:     "1245",

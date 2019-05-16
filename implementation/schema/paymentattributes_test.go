@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_Validate_Returns_Error_When_PaymentAttributes_Amount_Is_Empty(t *testing.T) {
+func Test_Validate_Returns_Error_When_PaymentAttributes_Amount_Is_Invalid(t *testing.T) {
 	invalidPayment := validPayment()
-	invalidPayment.Attributes.Amount = ""
+	invalidPayment.Attributes.Amount = ".0.0"
 	errs := Validate(invalidPayment)
 	assert.NotEmpty(t, errs)
 }

@@ -54,8 +54,8 @@ func validatePaymentAttributes(attributes *PaymentAttributes) []error {
 	if !contains(schemePaymentTypes, attributes.SchemePaymentType) {
 		validationErrors = append(validationErrors, fmt.Errorf("Unknown scheme payment type: %s", attributes.SchemePaymentType))
 	}
-	if attributes.Amount == "" {
-		validationErrors = append(validationErrors, errors.New("Amount cannot be empty."))
+	if !isAmount(attributes.Amount) {
+		validationErrors = append(validationErrors, fmt.Errorf("Invalid amount: %s", attributes.Amount))
 	}
 	if attributes.Currency == "" {
 		validationErrors = append(validationErrors, errors.New("Currency cannot be empty."))
