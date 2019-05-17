@@ -5,37 +5,12 @@ package payments
 import (
 	"testing"
 
-	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 
 	"github.com/Angry-Potato/go-pay-me/implementation/schema"
 	"github.com/Angry-Potato/go-pay-me/implementation/testhelpers"
 	"github.com/stretchr/testify/assert"
 )
-
-func validPayment() *schema.Payment {
-	ID := uuid.New().String()
-	return &schema.Payment{
-		ID:             ID,
-		Type:           "Payment",
-		Version:        0,
-		OrganisationID: uuid.New().String(),
-		Attributes: schema.PaymentAttributes{
-			Amount:               "10.50",
-			Currency:             "great",
-			EndToEndReference:    "here it is",
-			NumericReference:     "1245",
-			PaymentID:            "343535",
-			PaymentPurpose:       "stuff",
-			PaymentScheme:        "best",
-			PaymentType:          "Credit",
-			ProcessingDate:       "now",
-			Reference:            "that guy",
-			SchemePaymentSubType: "InternetBanking",
-			SchemePaymentType:    "ImmediatePayment",
-		},
-	}
-}
 
 func Test_All_Returns_List_Of_Payments(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
@@ -46,7 +21,7 @@ func Test_All_Returns_List_Of_Payments(t *testing.T) {
 
 func Test_Create_Returns_Created_Payment_When_Payment_Valid(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
-	incomingPayment := validPayment()
+	incomingPayment := schema.ValidPayment()
 	createdPayment, err := Create(DB, incomingPayment)
 	assert.Nil(t, err)
 	assert.Equal(t, incomingPayment, createdPayment)
@@ -54,7 +29,7 @@ func Test_Create_Returns_Created_Payment_When_Payment_Valid(t *testing.T) {
 
 func Test_Create_Returns_Error_When_Creating_Existing_Payment(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
-	incomingPayment := validPayment()
+	incomingPayment := schema.ValidPayment()
 	Create(DB, incomingPayment)
 	createdPayment, err := Create(DB, incomingPayment)
 	assert.NotNil(t, err)
@@ -65,7 +40,7 @@ func Test_Create_Returns_Error_When_Creating_Existing_Payment(t *testing.T) {
 
 func Test_Create_Returns_ValidationError_When_Payment_Invalid(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
-	incomingPayment := validPayment()
+	incomingPayment := schema.ValidPayment()
 	incomingPayment.ID = ""
 	incomingPayment.Version = -1
 	createdPayment, err := Create(DB, incomingPayment)
@@ -77,8 +52,19 @@ func Test_Create_Returns_ValidationError_When_Payment_Invalid(t *testing.T) {
 
 func Test_Create_Returns_ValidationError_When_PaymentAttributes_Invalid(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
-	incomingPayment := validPayment()
+	incomingPayment := schema.ValidPayment()
 	incomingPayment.Attributes.PaymentType = "Something unexpected!"
+	createdPayment, err := Create(DB, incomingPayment)
+	assert.NotNil(t, err)
+	assert.Nil(t, createdPayment)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+}
+
+func Test_Create_Returns_ValidationError_When_PaymentAttributes_BeneficiaryParty_Invalid(t *testing.T) {
+	DB := testhelpers.DBConnection(t, &schema.Payment{})
+	incomingPayment := schema.ValidPayment()
+	incomingPayment.Attributes.BeneficiaryParty.AccountNumber = ""
 	createdPayment, err := Create(DB, incomingPayment)
 	assert.NotNil(t, err)
 	assert.Nil(t, createdPayment)
@@ -88,8 +74,8 @@ func Test_Create_Returns_ValidationError_When_PaymentAttributes_Invalid(t *testi
 
 func Test_DeleteAll_Deletes_All_Payments(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
-	Create(DB, validPayment())
-	Create(DB, validPayment())
+	Create(DB, schema.ValidPayment())
+	Create(DB, schema.ValidPayment())
 	err := DeleteAll(DB)
 	assert.Nil(t, err)
 }
@@ -104,10 +90,10 @@ func Test_DeleteAll_Returns_No_Error_If_No_Prior_Payments_Exist(t *testing.T) {
 func Test_SetAll_Returns_Inserted_Payments(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
 	allPayments := []schema.Payment{
-		*validPayment(),
-		*validPayment(),
-		*validPayment(),
-		*validPayment(),
+		*schema.ValidPayment(),
+		*schema.ValidPayment(),
+		*schema.ValidPayment(),
+		*schema.ValidPayment(),
 	}
 	newPayments, err := SetAll(DB, allPayments)
 	assert.Nil(t, err)
@@ -128,14 +114,14 @@ func Test_SetAll_Returns_Inserted_Payments(t *testing.T) {
 
 func Test_SetAll_Returns_ValidationError_If_Any_Payments_Are_Invalid(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
-	badEgg := validPayment()
+	badEgg := schema.ValidPayment()
 	badEgg.ID = "not a real uuid"
 	badEgg.Version = -1
 	allPayments := []schema.Payment{
-		*validPayment(),
-		*validPayment(),
-		*validPayment(),
-		*validPayment(),
+		*schema.ValidPayment(),
+		*schema.ValidPayment(),
+		*schema.ValidPayment(),
+		*schema.ValidPayment(),
 		*badEgg,
 	}
 	newPayments, err := SetAll(DB, allPayments)
@@ -148,14 +134,33 @@ func Test_SetAll_Returns_ValidationError_If_Any_Payments_Are_Invalid(t *testing.
 
 func Test_SetAll_Returns_ValidationError_If_Any_PaymentAttributes_Are_Invalid(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
-	badEgg := validPayment()
+	badEgg := schema.ValidPayment()
 	badEgg.Attributes.SchemePaymentSubType = "Something unexpected!"
 	allPayments := []schema.Payment{
-		*validPayment(),
-		*validPayment(),
+		*schema.ValidPayment(),
+		*schema.ValidPayment(),
 		*badEgg,
-		*validPayment(),
-		*validPayment(),
+		*schema.ValidPayment(),
+		*schema.ValidPayment(),
+	}
+	newPayments, err := SetAll(DB, allPayments)
+	assert.NotNil(t, err)
+	assert.Empty(t, newPayments)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+	assert.Contains(t, err.Error(), badEgg.ID)
+}
+
+func Test_SetAll_Returns_ValidationError_If_Any_PaymentAttributes_BeneficiaryParty_Are_Invalid(t *testing.T) {
+	DB := testhelpers.DBConnection(t, &schema.Payment{})
+	badEgg := schema.ValidPayment()
+	badEgg.Attributes.BeneficiaryParty.BankID = ""
+	allPayments := []schema.Payment{
+		*schema.ValidPayment(),
+		*schema.ValidPayment(),
+		*badEgg,
+		*schema.ValidPayment(),
+		*schema.ValidPayment(),
 	}
 	newPayments, err := SetAll(DB, allPayments)
 	assert.NotNil(t, err)
@@ -167,7 +172,7 @@ func Test_SetAll_Returns_ValidationError_If_Any_PaymentAttributes_Are_Invalid(t 
 
 func Test_Get_Returns_Payment_When_Payment_Exists(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
-	incomingPayment := validPayment()
+	incomingPayment := schema.ValidPayment()
 	Create(DB, incomingPayment)
 	foundPayment, err := Get(DB, incomingPayment.ID)
 	assert.Nil(t, err)
@@ -193,7 +198,7 @@ func Test_Get_Returns_ValidationError_When_Payment_ID_Invalid(t *testing.T) {
 
 func Test_Delete_Returns_Nil_Error_When_Payment_Exists(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
-	incomingPayment := validPayment()
+	incomingPayment := schema.ValidPayment()
 	Create(DB, incomingPayment)
 	err := Delete(DB, incomingPayment.ID)
 	assert.Nil(t, err)
@@ -216,10 +221,11 @@ func Test_Delete_Returns_ValidationError_When_Payment_ID_Invalid(t *testing.T) {
 
 func Test_Update_Returns_Updated_Payment_When_Payment_Exists_And_Valid_Update(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
-	incomingPayment := validPayment()
+	incomingPayment := schema.ValidPayment()
 	Create(DB, incomingPayment)
 	incomingPayment.Version = 999
 	incomingPayment.Attributes.Amount = "55.90"
+	incomingPayment.Attributes.BeneficiaryParty.AccountName = "Captain New Pants"
 	newPayment, err := Update(DB, incomingPayment.ID, incomingPayment)
 	assert.Nil(t, err)
 	assert.Equal(t, incomingPayment, newPayment)
@@ -227,7 +233,7 @@ func Test_Update_Returns_Updated_Payment_When_Payment_Exists_And_Valid_Update(t 
 
 func Test_Update_Returns_Nil_When_Payment_Exists_Unchanged(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
-	incomingPayment := validPayment()
+	incomingPayment := schema.ValidPayment()
 	Create(DB, incomingPayment)
 	newPayment, err := Update(DB, incomingPayment.ID, incomingPayment)
 	assert.Nil(t, err)
@@ -236,7 +242,7 @@ func Test_Update_Returns_Nil_When_Payment_Exists_Unchanged(t *testing.T) {
 
 func Test_Update_Returns_Error_When_Payment_Does_Not_Exist(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
-	payment, err := Update(DB, "unused-id", validPayment())
+	payment, err := Update(DB, "unused-id", schema.ValidPayment())
 	assert.NotNil(t, err)
 	assert.Nil(t, payment)
 	assert.True(t, gorm.IsRecordNotFoundError(err))
@@ -244,7 +250,7 @@ func Test_Update_Returns_Error_When_Payment_Does_Not_Exist(t *testing.T) {
 
 func Test_Update_Returns_ValidationError_When_Payment_ID_Invalid(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
-	_, err := Update(DB, "not a uuid", validPayment())
+	_, err := Update(DB, "not a uuid", schema.ValidPayment())
 	assert.NotNil(t, err)
 	_, ok := err.(*ValidationError)
 	assert.True(t, ok)
@@ -252,7 +258,7 @@ func Test_Update_Returns_ValidationError_When_Payment_ID_Invalid(t *testing.T) {
 
 func Test_Update_Returns_ValidationError_When_Payment_Update_Invalid(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
-	payment := validPayment()
+	payment := schema.ValidPayment()
 	payment.Version = -22
 	newPayment, err := Update(DB, payment.ID, payment)
 	assert.NotNil(t, err)
@@ -263,8 +269,19 @@ func Test_Update_Returns_ValidationError_When_Payment_Update_Invalid(t *testing.
 
 func Test_Update_Returns_ValidationError_When_PaymentAttributes_Update_Invalid(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
-	payment := validPayment()
+	payment := schema.ValidPayment()
 	payment.Attributes.SchemePaymentType = "garbage"
+	newPayment, err := Update(DB, payment.ID, payment)
+	assert.NotNil(t, err)
+	assert.Nil(t, newPayment)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+}
+
+func Test_Update_Returns_ValidationError_When_PaymentAttributes_BeneficiaryParty_Update_Invalid(t *testing.T) {
+	DB := testhelpers.DBConnection(t, &schema.Payment{})
+	payment := schema.ValidPayment()
+	payment.Attributes.BeneficiaryParty.BankIDCode = ""
 	newPayment, err := Update(DB, payment.ID, payment)
 	assert.NotNil(t, err)
 	assert.Nil(t, newPayment)
