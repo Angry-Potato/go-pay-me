@@ -27,7 +27,7 @@ var schemePaymentTypes = []string{"ImmediatePayment"}
 
 // PaymentAttributes resource
 type PaymentAttributes struct {
-	ID                   uint   `gorm:"primary_key" json:"id"`
+	ID                   uint   `gorm:"primary_key" json:"-"`
 	Amount               string `json:"amount"`
 	Currency             string `json:"currency"`
 	EndToEndReference    string `json:"end_to_end_reference"`
@@ -40,7 +40,9 @@ type PaymentAttributes struct {
 	Reference            string `json:"reference"`
 	SchemePaymentSubType string `json:"scheme_payment_sub_type"`
 	SchemePaymentType    string `json:"scheme_payment_type"`
-	InternalPaymentID    string `gorm:"unique;not null" json:"internal_payment_id"`
+	InternalPaymentID    string `gorm:"unique;not null" json:"-"`
+	BeneficiaryParty     Party  `json:"beneficiary_party"`
+	BeneficiaryPartyID   uint   `json:"-"`
 }
 
 func validatePaymentAttributes(attributes *PaymentAttributes) []error {
@@ -84,5 +86,5 @@ func validatePaymentAttributes(attributes *PaymentAttributes) []error {
 	if attributes.InternalPaymentID != "" && !isUUID(attributes.InternalPaymentID) {
 		validationErrors = append(validationErrors, errors.New("InternalPaymentID invalid, must be purely alphanumeric with dashes"))
 	}
-	return validationErrors
+	return append(validationErrors, validateParty(&attributes.BeneficiaryParty)...)
 }

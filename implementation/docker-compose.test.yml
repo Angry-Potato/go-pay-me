@@ -17,3 +17,4 @@ services:
     links:
       - go-pay-me
       - postgres
+    restart: "no"

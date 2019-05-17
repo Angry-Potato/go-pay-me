@@ -23,21 +23,44 @@ func (e *ValidationError) Error() string {
 // All payments
 func All(DB *gorm.DB) ([]schema.Payment, error) {
 	allPayments := []schema.Payment{}
-	err := DB.Preload("Attributes").Find(&allPayments).Error
+	err := DB.Preload("Attributes").Preload("Attributes.BeneficiaryParty").Find(&allPayments).Error
 	return allPayments, err
 }
 
 // Create a new payment
 func Create(DB *gorm.DB, payment *schema.Payment) (*schema.Payment, error) {
 	validationErrors := schema.Validate(payment)
-	if len(validationErrors) == 0 {
-		if err := DB.Create(&payment).Error; err != nil {
-			return nil, err
-		}
-		return payment, nil
+	if len(validationErrors) != 0 {
+		return nil, consolidateValidationErrors(validationErrors, fmt.Sprintf("Validation errors whilst creating payment with id %s", payment.ID))
 	}
 
-	return nil, consolidateValidationErrors(validationErrors, fmt.Sprintf("Validation errors whilst creating payment with id %s", payment.ID))
+	if createErr := DB.Create(&payment).Error; createErr != nil {
+		if !isUniqueConstraintError(createErr) {
+			return nil, createErr
+		}
+		payment = loadAssociations(DB, payment)
+		if createErr = DB.Create(&payment).Error; createErr != nil {
+			return nil, createErr
+		}
+		if saveErr := DB.Save(&payment).Error; saveErr != nil {
+			return nil, saveErr
+		}
+	}
+
+	return payment, nil
+}
+
+func loadAssociations(DB *gorm.DB, payment *schema.Payment) *schema.Payment {
+	beneficiaryParty := schema.Party{}
+	if err := DB.Where(&schema.Party{
+		AccountNumber: payment.Attributes.BeneficiaryParty.AccountNumber,
+		BankID:        payment.Attributes.BeneficiaryParty.BankID,
+		BankIDCode:    payment.Attributes.BeneficiaryParty.BankIDCode,
+	}).First(&beneficiaryParty).Error; err == nil {
+		payment.Attributes.BeneficiaryParty.ID = beneficiaryParty.ID
+		payment.Attributes.BeneficiaryPartyID = beneficiaryParty.ID
+	}
+	return payment
 }
 
 // DeleteAll payments
@@ -57,37 +80,32 @@ func SetAll(DB *gorm.DB, payments []schema.Payment) ([]schema.Payment, error) {
 		}
 	}
 
-	if len(consolidatedValidation) == 0 {
-		DB.Lock()
-		defer DB.Unlock()
-		err := DeleteAll(DB)
-		if err != nil {
-			return nil, err
-		}
-
-		successes := 0
-		errs := []error{}
-		for _, payment := range payments {
-			if _, err = Create(DB, &payment); err != nil {
-				errs = append(errs, err)
-			} else {
-				successes++
-			}
-		}
-
-		if len(errs) != 0 {
-			return nil, consolidateErrors(errs, "Error(s) batch inserting: ")
-		} else if successes != len(payments) {
-			return nil, fmt.Errorf("Could only insert %d out of %d", successes, len(payments))
-		}
-		newPayments, err := All(DB)
-		if err != nil {
-			return nil, err
-		}
-		return newPayments, nil
+	if len(consolidatedValidation) != 0 {
+		return nil, consolidateValidationErrors(consolidatedValidation, "Errors")
 	}
 
-	return nil, consolidateValidationErrors(consolidatedValidation, "Errors")
+	if err := resetPayments(DB, payments); err != nil {
+		return nil, fmt.Errorf("Error batch inserting: %s", err.Error())
+	}
+
+	newPayments, err := All(DB)
+	if err != nil {
+		return nil, err
+	}
+	return newPayments, nil
+}
+
+func resetPayments(DB *gorm.DB, payments []schema.Payment) (result error) {
+	if err := DeleteAll(DB); err != nil {
+		return err
+	}
+
+	for _, payment := range payments {
+		if _, err := Create(DB, &payment); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // Get a payment by ID
@@ -98,7 +116,7 @@ func Get(DB *gorm.DB, ID string) (*schema.Payment, error) {
 	}
 
 	payment := schema.Payment{}
-	if err = DB.Preload("Attributes").Where(&schema.Payment{ID: ID}).First(&payment).Error; err != nil {
+	if err = DB.Preload("Attributes").Preload("Attributes.BeneficiaryParty").Where(&schema.Payment{ID: ID}).First(&payment).Error; err != nil {
 		return nil, err
 	}
 	return &payment, nil
@@ -123,12 +141,9 @@ func Delete(DB *gorm.DB, ID string) error {
 
 // Update a payment by ID
 func Update(DB *gorm.DB, ID string, payment *schema.Payment) (*schema.Payment, error) {
-	err := schema.ValidateID(ID)
-	if err != nil {
+	if err := schema.ValidateID(ID); err != nil {
 		return nil, &ValidationError{err.Error()}
-	}
-	errs := schema.Validate(payment)
-	if len(errs) != 0 {
+	} else if errs := schema.Validate(payment); len(errs) != 0 {
 		return nil, consolidateValidationErrors(errs, fmt.Sprintf("Validation errors whilst Updating payment %s", payment.ID))
 	}
 
@@ -136,19 +151,30 @@ func Update(DB *gorm.DB, ID string, payment *schema.Payment) (*schema.Payment, e
 	if err != nil {
 		return nil, err
 	}
+
+	payment = syncAssociations(DB, existingPayment, payment)
+
 	if *existingPayment == *payment {
 		return nil, nil
-	}
-
-	payment.Attributes.ID = existingPayment.Attributes.ID
-	DB = DB.Save(payment)
-	if err = DB.Error; err != nil {
+	} else if err = DB.Save(payment).Error; err != nil {
 		return nil, err
 	}
-	if DB.RowsAffected == 0 {
-		return nil, gorm.ErrRecordNotFound
-	}
 	return payment, nil
+}
+
+func syncAssociations(DB *gorm.DB, from, to *schema.Payment) *schema.Payment {
+	if to.Attributes.ID == 0 {
+		to.Attributes.ID = from.Attributes.ID
+		to.Attributes.InternalPaymentID = from.Attributes.InternalPaymentID
+	}
+
+	if schema.IsSameParty(&to.Attributes.BeneficiaryParty, &from.Attributes.BeneficiaryParty) {
+		to.Attributes.BeneficiaryParty.ID = from.Attributes.BeneficiaryParty.ID
+		to.Attributes.BeneficiaryPartyID = from.Attributes.BeneficiaryPartyID
+	} else {
+		to = loadAssociations(DB, to)
+	}
+	return to
 }
 
 func consolidateErrors(errs []error, prefix string) error {
@@ -165,4 +191,8 @@ func consolidateValidationErrors(errs []error, prefix string) error {
 		errstrings = append(errstrings, err.Error())
 	}
 	return &ValidationError{fmt.Sprintf("%s: %s", prefix, strings.Join(errstrings, ", "))}
+}
+
+func isUniqueConstraintError(err error) bool {
+	return strings.Contains(err.Error(), "unique constraint")
 }

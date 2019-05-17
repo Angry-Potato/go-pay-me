@@ -8,34 +8,9 @@ import (
 
 	"github.com/Angry-Potato/go-pay-me/implementation/schema"
 	"github.com/Angry-Potato/go-pay-me/implementation/testhelpers"
-	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/resty.v1"
 )
-
-func validPayment() *schema.Payment {
-	ID := uuid.New().String()
-	return &schema.Payment{
-		ID:             ID,
-		Type:           "Payment",
-		Version:        0,
-		OrganisationID: uuid.New().String(),
-		Attributes: schema.PaymentAttributes{
-			Amount:               "30.20",
-			Currency:             "great",
-			EndToEndReference:    "here it is",
-			NumericReference:     "1245",
-			PaymentID:            "343535",
-			PaymentPurpose:       "stuff",
-			PaymentScheme:        "best",
-			PaymentType:          "Credit",
-			ProcessingDate:       "now",
-			Reference:            "that guy",
-			SchemePaymentSubType: "InternetBanking",
-			SchemePaymentType:    "ImmediatePayment",
-		},
-	}
-}
 
 // The execution order of the following tests is significant
 func Test_HTTP_Restful_Correctness(t *testing.T) {
@@ -61,10 +36,10 @@ func Test_HTTP_Restful_Correctness(t *testing.T) {
 
 		t.Run("PUT payments is successful", func(t *testing.T) {
 			allPayments := []schema.Payment{
-				*validPayment(),
-				*validPayment(),
-				*validPayment(),
-				*validPayment(),
+				*schema.ValidPayment(),
+				*schema.ValidPayment(),
+				*schema.ValidPayment(),
+				*schema.ValidPayment(),
 			}
 			allNewPayments := []schema.Payment{}
 			resp, err := resty.R().SetResult(&allNewPayments).SetBody(allPayments).Put(address)
@@ -81,14 +56,14 @@ func Test_HTTP_Restful_Correctness(t *testing.T) {
 
 	t.Run("When payments exist", func(t *testing.T) {
 
-		futurePayment := *validPayment()
+		futurePayment := *schema.ValidPayment()
 
 		deleteAll(t, address)
 		initialPayments := createAll(t, address, []schema.Payment{
-			*validPayment(),
-			*validPayment(),
-			*validPayment(),
-			*validPayment(),
+			*schema.ValidPayment(),
+			*schema.ValidPayment(),
+			*schema.ValidPayment(),
+			*schema.ValidPayment(),
 		})
 
 		t.Run("GET payments returns all payments", func(t *testing.T) {
@@ -109,10 +84,10 @@ func Test_HTTP_Restful_Correctness(t *testing.T) {
 
 		t.Run("PUT new payments is successful", func(t *testing.T) {
 			newPayments := []schema.Payment{
-				*validPayment(),
-				*validPayment(),
-				*validPayment(),
-				*validPayment(),
+				*schema.ValidPayment(),
+				*schema.ValidPayment(),
+				*schema.ValidPayment(),
+				*schema.ValidPayment(),
 			}
 			allNewPayments := []schema.Payment{}
 			resp, err := resty.R().SetResult(&allNewPayments).SetBody(newPayments).Put(address)
@@ -133,7 +108,7 @@ func Test_HTTP_Restful_Correctness(t *testing.T) {
 		})
 
 		t.Run("PUT payment by ID is unsuccessful for non existent payment", func(t *testing.T) {
-			resp, err := resty.R().SetBody(validPayment()).Put(fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), futurePayment.ID))
+			resp, err := resty.R().SetBody(schema.ValidPayment()).Put(fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), futurePayment.ID))
 			assert.Nil(t, err)
 			assert.Equal(t, 404, resp.StatusCode())
 		})
@@ -143,14 +118,19 @@ func Test_HTTP_Restful_Correctness(t *testing.T) {
 			resp, err := resty.R().SetBody(futurePayment).SetResult(&createdPayment).Post(address)
 			assert.Nil(t, err)
 			assert.Equal(t, 201, resp.StatusCode())
-			futurePayment.Attributes.InternalPaymentID = futurePayment.ID
-			futurePayment.Attributes.ID = createdPayment.Attributes.ID
 			assert.Equal(t, futurePayment, *createdPayment)
 			allPayments := []schema.Payment{}
 			resp, err = resty.R().SetResult(&allPayments).Get(address)
 			assert.Nil(t, err)
 			assert.Equal(t, 200, resp.StatusCode())
 			assert.Contains(t, allPayments, *createdPayment)
+		})
+
+		t.Run("POST existing payment fails", func(t *testing.T) {
+			createdPayment := &schema.Payment{}
+			resp, err := resty.R().SetBody(futurePayment).SetResult(&createdPayment).Post(address)
+			assert.Nil(t, err)
+			assert.Equal(t, 500, resp.StatusCode())
 		})
 
 		t.Run("GET payment by ID is successful for existing payment", func(t *testing.T) {
@@ -174,6 +154,22 @@ func Test_HTTP_Restful_Correctness(t *testing.T) {
 			assert.Nil(t, err)
 			assert.Equal(t, 200, resp.StatusCode())
 			assert.Equal(t, newVersion, foundPayment.Version)
+		})
+
+		t.Run("PUT payment by ID fails if no change to existing payment", func(t *testing.T) {
+			resty.R().SetBody(futurePayment).Put(fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), futurePayment.ID))
+			resp, err := resty.R().SetBody(futurePayment).Put(fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), futurePayment.ID))
+			assert.Nil(t, err)
+			assert.Equal(t, 304, resp.StatusCode())
+		})
+
+		t.Run("DELETE payment by ID is successful", func(t *testing.T) {
+			resp, err := resty.R().Delete(fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), futurePayment.ID))
+			assert.Nil(t, err)
+			assert.Equal(t, 200, resp.StatusCode())
+			resp, err = resty.R().Get(fmt.Sprintf("%s/payments/%s", testhelpers.APIAddress(t), futurePayment.ID))
+			assert.Nil(t, err)
+			assert.Equal(t, 404, resp.StatusCode())
 		})
 
 		t.Run("DELETE payments is successful", func(t *testing.T) {
