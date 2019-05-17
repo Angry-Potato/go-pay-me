@@ -15,6 +15,14 @@ type Party struct {
 	Name              string `json:"name"`
 }
 
+func validateParties(parties ...*Party) []error {
+	validationErrors := []error{}
+	for _, party := range parties {
+		validationErrors = append(validationErrors, validateParty(party)...)
+	}
+	return validationErrors
+}
+
 func validateParty(party *Party) []error {
 	validationErrors := []error{}
 	if party.AccountNumber == "" {

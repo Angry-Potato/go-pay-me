@@ -40,6 +40,24 @@ func Test_validateParty_Returns_Error_When_BankIDCode_Is_Empty(t *testing.T) {
 	assert.NotEmpty(t, errs)
 }
 
+func Test_validateParty_Returns_No_Error_When_Party_Valid(t *testing.T) {
+	errs := validateParty(validParty())
+	assert.Empty(t, errs)
+}
+
+func Test_validateParties_Returns_Error_When_Parties_Invalid(t *testing.T) {
+	invalidPartyA, invalidPartyB := validParty(), validParty()
+	invalidPartyA.BankIDCode = ""
+	invalidPartyB.BankID = ""
+	errs := validateParties(invalidPartyA, invalidPartyB, validParty())
+	assert.NotEmpty(t, errs)
+}
+
+func Test_validateParties_Returns_No_Error_When_Parties_Valid(t *testing.T) {
+	errs := validateParties(validParty(), validParty(), validParty())
+	assert.Empty(t, errs)
+}
+
 func Test_IsSameParty_Returns_True_When_Parties_Are_Equal(t *testing.T) {
 	partyA, partyB := validParty(), validParty()
 	assert.Equal(t, partyA, partyB)
