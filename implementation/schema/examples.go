@@ -48,3 +48,13 @@ func ValidParty() Party {
 		Name:              "Mr Man",
 	}
 }
+
+// ValidCurrencyExchange an example of a valid currency exchange
+func ValidCurrencyExchange() CurrencyExchange {
+	return CurrencyExchange{
+		ContractReference: "FX123",
+		ExchangeRate:      "2.00000",
+		OriginalAmount:    "200.42",
+		OriginalCurrency:  "USD",
+	}
+}
