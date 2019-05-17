@@ -31,6 +31,7 @@ func ValidPaymentAttributes() PaymentAttributes {
 		SchemePaymentType:    "ImmediatePayment",
 		BeneficiaryParty:     ValidParty(),
 		DebtorParty:          ValidParty(),
+		SponsorParty:         ValidParty(),
 	}
 }
 

@@ -83,6 +83,17 @@ func Test_Create_Returns_ValidationError_When_PaymentAttributes_DebtorParty_Inva
 	assert.True(t, ok)
 }
 
+func Test_Create_Returns_ValidationError_When_PaymentAttributes_SponsorParty_Invalid(t *testing.T) {
+	DB := testhelpers.DBConnection(t, &schema.Payment{})
+	incomingPayment := schema.ValidPayment()
+	incomingPayment.Attributes.SponsorParty.AccountNumber = ""
+	createdPayment, err := Create(DB, incomingPayment)
+	assert.NotNil(t, err)
+	assert.Nil(t, createdPayment)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+}
+
 func Test_DeleteAll_Deletes_All_Payments(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
 	Create(DB, schema.ValidPayment())
@@ -200,6 +211,25 @@ func Test_SetAll_Returns_ValidationError_If_Any_PaymentAttributes_DebtorParty_Ar
 	assert.Contains(t, err.Error(), badEgg.ID)
 }
 
+func Test_SetAll_Returns_ValidationError_If_Any_PaymentAttributes_SponsorParty_Are_Invalid(t *testing.T) {
+	DB := testhelpers.DBConnection(t, &schema.Payment{})
+	badEgg := schema.ValidPayment()
+	badEgg.Attributes.SponsorParty.BankID = ""
+	allPayments := []schema.Payment{
+		*schema.ValidPayment(),
+		*schema.ValidPayment(),
+		*badEgg,
+		*schema.ValidPayment(),
+		*schema.ValidPayment(),
+	}
+	newPayments, err := SetAll(DB, allPayments)
+	assert.NotNil(t, err)
+	assert.Empty(t, newPayments)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+	assert.Contains(t, err.Error(), badEgg.ID)
+}
+
 func Test_Get_Returns_Payment_When_Payment_Exists(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
 	incomingPayment := schema.ValidPayment()
@@ -257,6 +287,7 @@ func Test_Update_Returns_Updated_Payment_When_Payment_Exists_And_Valid_Update(t 
 	incomingPayment.Attributes.Amount = "55.90"
 	incomingPayment.Attributes.BeneficiaryParty.AccountName = "Captain New Pants"
 	incomingPayment.Attributes.DebtorParty.AccountName = "Captain Old Pants"
+	incomingPayment.Attributes.SponsorParty.AccountNumber = "33333"
 	newPayment, err := Update(DB, incomingPayment.ID, incomingPayment)
 	assert.Nil(t, err)
 	assert.Equal(t, incomingPayment, newPayment)
@@ -324,6 +355,17 @@ func Test_Update_Returns_ValidationError_When_PaymentAttributes_DebtorParty_Upda
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
 	payment := schema.ValidPayment()
 	payment.Attributes.DebtorParty.BankIDCode = ""
+	newPayment, err := Update(DB, payment.ID, payment)
+	assert.NotNil(t, err)
+	assert.Nil(t, newPayment)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+}
+
+func Test_Update_Returns_ValidationError_When_PaymentAttributes_SponsorParty_Update_Invalid(t *testing.T) {
+	DB := testhelpers.DBConnection(t, &schema.Payment{})
+	payment := schema.ValidPayment()
+	payment.Attributes.SponsorParty.BankID = ""
 	newPayment, err := Update(DB, payment.ID, payment)
 	assert.NotNil(t, err)
 	assert.Nil(t, newPayment)

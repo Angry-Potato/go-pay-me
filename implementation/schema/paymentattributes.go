@@ -22,23 +22,25 @@ var schemePaymentTypes = []string{"ImmediatePayment"}
 // PaymentAttributes resource
 type PaymentAttributes struct {
 	ID                   uint   `gorm:"primary_key" json:"-"`
-	Amount               string `json:"amount"`
-	Currency             string `json:"currency"`
-	EndToEndReference    string `json:"end_to_end_reference"`
-	NumericReference     string `json:"numeric_reference"`
-	PaymentID            string `json:"payment_id"`
-	PaymentPurpose       string `json:"payment_purpose"`
-	PaymentScheme        string `json:"payment_scheme"`
-	PaymentType          string `json:"payment_type"`
-	ProcessingDate       string `json:"processing_date"`
-	Reference            string `json:"reference"`
-	SchemePaymentSubType string `json:"scheme_payment_sub_type"`
-	SchemePaymentType    string `json:"scheme_payment_type"`
+	Amount               string `json:"amount,omitempty"`
+	Currency             string `json:"currency,omitempty"`
+	EndToEndReference    string `json:"end_to_end_reference,omitempty"`
+	NumericReference     string `json:"numeric_reference,omitempty"`
+	PaymentID            string `json:"payment_id,omitempty"`
+	PaymentPurpose       string `json:"payment_purpose,omitempty"`
+	PaymentScheme        string `json:"payment_scheme,omitempty"`
+	PaymentType          string `json:"payment_type,omitempty"`
+	ProcessingDate       string `json:"processing_date,omitempty"`
+	Reference            string `json:"reference,omitempty"`
+	SchemePaymentSubType string `json:"scheme_payment_sub_type,omitempty"`
+	SchemePaymentType    string `json:"scheme_payment_type,omitempty"`
 	InternalPaymentID    string `gorm:"unique;not null" json:"-"`
-	BeneficiaryParty     Party  `json:"beneficiary_party"`
+	BeneficiaryParty     Party  `json:"beneficiary_party,omitempty"`
 	BeneficiaryPartyID   uint   `json:"-"`
-	DebtorParty          Party  `json:"debtor_party"`
+	DebtorParty          Party  `json:"debtor_party,omitempty"`
 	DebtorPartyID        uint   `json:"-"`
+	SponsorParty         Party  `json:"sponsor_party,omitempty"`
+	SponsorPartyID       uint   `json:"-"`
 }
 
 func validatePaymentAttributes(attributes *PaymentAttributes) []error {
@@ -82,5 +84,5 @@ func validatePaymentAttributes(attributes *PaymentAttributes) []error {
 	if attributes.InternalPaymentID != "" && !isUUID(attributes.InternalPaymentID) {
 		validationErrors = append(validationErrors, errors.New("InternalPaymentID invalid, must be purely alphanumeric with dashes"))
 	}
-	return append(validationErrors, validateParties(&attributes.BeneficiaryParty, &attributes.DebtorParty)...)
+	return append(validationErrors, validateParties(&attributes.BeneficiaryParty, &attributes.DebtorParty, &attributes.SponsorParty)...)
 }

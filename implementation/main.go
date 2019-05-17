@@ -20,6 +20,7 @@ func main() {
 	DB.Model(&schema.PaymentAttributes{}).AddForeignKey("internal_payment_id", "payments(id)", "CASCADE", "CASCADE")
 	DB.Model(&schema.PaymentAttributes{}).AddForeignKey("beneficiary_party_id", "parties(id)", "SET NULL", "CASCADE")
 	DB.Model(&schema.PaymentAttributes{}).AddForeignKey("debtor_party_id", "parties(id)", "SET NULL", "CASCADE")
+	DB.Model(&schema.PaymentAttributes{}).AddForeignKey("sponsor_party_id", "parties(id)", "SET NULL", "CASCADE")
 
 	serverPort := port(os.Getenv("PORT"), 8080)
 	log.Fatal(web.StartServer(serverPort, DB))

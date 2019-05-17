@@ -5,14 +5,14 @@ import "errors"
 // Party resource
 type Party struct {
 	ID                uint   `gorm:"primary_key" json:"-"`
-	AccountName       string `json:"account_name"`
-	AccountNumber     string `gorm:"unique_index:bankacc" json:"account_number"`
-	AccountNumberCode string `json:"account_number_code"`
+	AccountName       string `json:"account_name,omitempty"`
+	AccountNumber     string `gorm:"unique_index:bankacc" json:"account_number,omitempty"`
+	AccountNumberCode string `json:"account_number_code,omitempty"`
 	AccountType       int    `json:"account_type"`
-	Address           string `json:"address"`
-	BankID            string `gorm:"unique_index:bankacc" json:"bank_id"`
-	BankIDCode        string `gorm:"unique_index:bankacc" json:"bank_id_code"`
-	Name              string `json:"name"`
+	Address           string `json:"address,omitempty"`
+	BankID            string `gorm:"unique_index:bankacc" json:"bank_id,omitempty"`
+	BankIDCode        string `gorm:"unique_index:bankacc" json:"bank_id_code,omitempty"`
+	Name              string `json:"name,omitempty"`
 }
 
 func validateParties(parties ...*Party) []error {

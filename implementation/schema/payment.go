@@ -9,11 +9,11 @@ var types = []string{"Payment"}
 
 // Payment resource
 type Payment struct {
-	ID             string            `json:"id"`
-	Type           string            `json:"type"`
+	ID             string            `json:"id,omitempty"`
+	Type           string            `json:"type,omitempty"`
 	Version        int64             `json:"version"`
-	OrganisationID string            `json:"organisation_id"`
-	Attributes     PaymentAttributes `gorm:"foreignkey:InternalPaymentID" json:"attributes"`
+	OrganisationID string            `json:"organisation_id,omitempty"`
+	Attributes     PaymentAttributes `gorm:"foreignkey:InternalPaymentID" json:"attributes,omitempty"`
 }
 
 // Validate a payment resource
