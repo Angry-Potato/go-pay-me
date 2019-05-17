@@ -12,7 +12,7 @@ type CurrencyExchange struct {
 	ExchangeRate        string `json:"exchange_rate"`
 	OriginalAmount      string `json:"original_amount"`
 	OriginalCurrency    string `json:"original_currency"`
-	PaymentAttributesID string `gorm:"unique;not null" json:"-"`
+	PaymentAttributesID uint   `gorm:"unique;not null" json:"-"`
 }
 
 func validateCurrencyExchange(currencyExchange *CurrencyExchange) []error {
