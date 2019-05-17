@@ -32,6 +32,7 @@ func ValidPaymentAttributes() PaymentAttributes {
 		BeneficiaryParty:     ValidParty(),
 		DebtorParty:          ValidParty(),
 		SponsorParty:         ValidParty(),
+		ForeignExchange:      ValidCurrencyExchange(),
 	}
 }
 

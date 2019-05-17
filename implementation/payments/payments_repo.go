@@ -23,7 +23,7 @@ func (e *ValidationError) Error() string {
 // All payments
 func All(DB *gorm.DB) ([]schema.Payment, error) {
 	allPayments := []schema.Payment{}
-	err := DB.Preload("Attributes").Preload("Attributes.BeneficiaryParty").Preload("Attributes.DebtorParty").Preload("Attributes.SponsorParty").Find(&allPayments).Error
+	err := DB.Preload("Attributes").Preload("Attributes.BeneficiaryParty").Preload("Attributes.DebtorParty").Preload("Attributes.SponsorParty").Preload("Attributes.ForeignExchange").Find(&allPayments).Error
 	return allPayments, err
 }
 
@@ -46,6 +46,9 @@ func Create(DB *gorm.DB, payment *schema.Payment) (*schema.Payment, error) {
 			return nil, createErr
 		}
 		if createErr = DB.Set("gorm:association_autocreate", false).Create(&payment.Attributes).Error; createErr != nil {
+			return nil, createErr
+		}
+		if createErr = DB.Create(&payment.Attributes.ForeignExchange).Error; createErr != nil {
 			return nil, createErr
 		}
 		if saveErr := DB.Set("gorm:association_autocreate", false).Save(&payment).Error; saveErr != nil {
@@ -153,7 +156,7 @@ func Get(DB *gorm.DB, ID string) (*schema.Payment, error) {
 	}
 
 	payment := schema.Payment{}
-	if err = DB.Preload("Attributes").Preload("Attributes.BeneficiaryParty").Preload("Attributes.DebtorParty").Preload("Attributes.SponsorParty").Where(&schema.Payment{ID: ID}).First(&payment).Error; err != nil {
+	if err = DB.Preload("Attributes").Preload("Attributes.BeneficiaryParty").Preload("Attributes.DebtorParty").Preload("Attributes.SponsorParty").Preload("Attributes.ForeignExchange").Where(&schema.Payment{ID: ID}).First(&payment).Error; err != nil {
 		return nil, err
 	}
 	return &payment, nil

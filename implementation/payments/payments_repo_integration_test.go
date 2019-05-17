@@ -94,6 +94,17 @@ func Test_Create_Returns_ValidationError_When_PaymentAttributes_SponsorParty_Inv
 	assert.True(t, ok)
 }
 
+func Test_Create_Returns_ValidationError_When_PaymentAttributes_ForeignExchange_Invalid(t *testing.T) {
+	DB := testhelpers.DBConnection(t, &schema.Payment{})
+	incomingPayment := schema.ValidPayment()
+	incomingPayment.Attributes.ForeignExchange.OriginalAmount = "2323fdss"
+	createdPayment, err := Create(DB, incomingPayment)
+	assert.NotNil(t, err)
+	assert.Nil(t, createdPayment)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+}
+
 func Test_DeleteAll_Deletes_All_Payments(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
 	Create(DB, schema.ValidPayment())
@@ -230,6 +241,25 @@ func Test_SetAll_Returns_ValidationError_If_Any_PaymentAttributes_SponsorParty_A
 	assert.Contains(t, err.Error(), badEgg.ID)
 }
 
+func Test_SetAll_Returns_ValidationError_If_Any_PaymentAttributes_ForeignExchange_Are_Invalid(t *testing.T) {
+	DB := testhelpers.DBConnection(t, &schema.Payment{})
+	badEgg := schema.ValidPayment()
+	badEgg.Attributes.ForeignExchange.ContractReference = ""
+	allPayments := []schema.Payment{
+		*schema.ValidPayment(),
+		*schema.ValidPayment(),
+		*badEgg,
+		*schema.ValidPayment(),
+		*schema.ValidPayment(),
+	}
+	newPayments, err := SetAll(DB, allPayments)
+	assert.NotNil(t, err)
+	assert.Empty(t, newPayments)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+	assert.Contains(t, err.Error(), badEgg.ID)
+}
+
 func Test_Get_Returns_Payment_When_Payment_Exists(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
 	incomingPayment := schema.ValidPayment()
@@ -237,7 +267,7 @@ func Test_Get_Returns_Payment_When_Payment_Exists(t *testing.T) {
 	foundPayment, err := Get(DB, incomingPayment.ID)
 	assert.Nil(t, err)
 	assert.NotNil(t, foundPayment)
-	assert.Equal(t, foundPayment, incomingPayment)
+	assert.Equal(t, incomingPayment, foundPayment)
 }
 
 func Test_Get_Returns_Nil_When_Payment_Does_Not_Exist(t *testing.T) {
@@ -366,6 +396,17 @@ func Test_Update_Returns_ValidationError_When_PaymentAttributes_SponsorParty_Upd
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
 	payment := schema.ValidPayment()
 	payment.Attributes.SponsorParty.BankID = ""
+	newPayment, err := Update(DB, payment.ID, payment)
+	assert.NotNil(t, err)
+	assert.Nil(t, newPayment)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+}
+
+func Test_Update_Returns_ValidationError_When_PaymentAttributes_ForeignExchange_Update_Invalid(t *testing.T) {
+	DB := testhelpers.DBConnection(t, &schema.Payment{})
+	payment := schema.ValidPayment()
+	payment.Attributes.ForeignExchange.OriginalCurrency = ""
 	newPayment, err := Update(DB, payment.ID, payment)
 	assert.NotNil(t, err)
 	assert.Nil(t, newPayment)
