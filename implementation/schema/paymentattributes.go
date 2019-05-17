@@ -5,14 +5,8 @@ import (
 	"fmt"
 )
 
-// 	"beneficiary_party": {
-// 	  "$ref": "#/definitions/Party/example"
-// 	},
 // 	"charges_information": {
 // 	  "$ref": "#/definitions/Charges/example"
-// 	},
-// 	"debtor_party": {
-// 	  "$ref": "#/definitions/Party/example"
 // 	},
 // 	"fx": {
 // 	  "$ref": "#/definitions/CurrencyExchange/example"
@@ -43,6 +37,8 @@ type PaymentAttributes struct {
 	InternalPaymentID    string `gorm:"unique;not null" json:"-"`
 	BeneficiaryParty     Party  `json:"beneficiary_party"`
 	BeneficiaryPartyID   uint   `json:"-"`
+	DebtorParty          Party  `json:"debtor_party"`
+	DebtorPartyID        uint   `json:"-"`
 }
 
 func validatePaymentAttributes(attributes *PaymentAttributes) []error {
@@ -86,5 +82,5 @@ func validatePaymentAttributes(attributes *PaymentAttributes) []error {
 	if attributes.InternalPaymentID != "" && !isUUID(attributes.InternalPaymentID) {
 		validationErrors = append(validationErrors, errors.New("InternalPaymentID invalid, must be purely alphanumeric with dashes"))
 	}
-	return append(validationErrors, validateParty(&attributes.BeneficiaryParty)...)
+	return append(validationErrors, validateParties(&attributes.BeneficiaryParty, &attributes.DebtorParty)...)
 }

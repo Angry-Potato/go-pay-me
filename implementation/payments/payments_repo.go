@@ -23,7 +23,7 @@ func (e *ValidationError) Error() string {
 // All payments
 func All(DB *gorm.DB) ([]schema.Payment, error) {
 	allPayments := []schema.Payment{}
-	err := DB.Preload("Attributes").Preload("Attributes.BeneficiaryParty").Find(&allPayments).Error
+	err := DB.Preload("Attributes").Preload("Attributes.BeneficiaryParty").Preload("Attributes.DebtorParty").Find(&allPayments).Error
 	return allPayments, err
 }
 
@@ -35,14 +35,20 @@ func Create(DB *gorm.DB, payment *schema.Payment) (*schema.Payment, error) {
 	}
 
 	if createErr := DB.Create(&payment).Error; createErr != nil {
-		if !isUniqueConstraintError(createErr) {
+		if !isUniqueConstraintError(createErr, "bankacc") {
 			return nil, createErr
 		}
-		payment = loadAssociations(DB, payment)
-		if createErr = DB.Create(&payment).Error; createErr != nil {
+		payment, err := loadAssociations(DB, payment)
+		if err != nil {
+			return nil, err
+		}
+		if createErr = DB.Set("gorm:association_autocreate", false).Create(&payment).Error; createErr != nil {
 			return nil, createErr
 		}
-		if saveErr := DB.Save(&payment).Error; saveErr != nil {
+		if createErr = DB.Set("gorm:association_autocreate", false).Create(&payment.Attributes).Error; createErr != nil {
+			return nil, createErr
+		}
+		if saveErr := DB.Set("gorm:association_autocreate", false).Save(&payment).Error; saveErr != nil {
 			return nil, saveErr
 		}
 	}
@@ -50,7 +56,8 @@ func Create(DB *gorm.DB, payment *schema.Payment) (*schema.Payment, error) {
 	return payment, nil
 }
 
-func loadAssociations(DB *gorm.DB, payment *schema.Payment) *schema.Payment {
+func loadAssociations(DB *gorm.DB, payment *schema.Payment) (*schema.Payment, error) {
+	payment.Attributes.InternalPaymentID = payment.ID
 	beneficiaryParty := schema.Party{}
 	if err := DB.Where(&schema.Party{
 		AccountNumber: payment.Attributes.BeneficiaryParty.AccountNumber,
@@ -60,7 +67,24 @@ func loadAssociations(DB *gorm.DB, payment *schema.Payment) *schema.Payment {
 		payment.Attributes.BeneficiaryParty.ID = beneficiaryParty.ID
 		payment.Attributes.BeneficiaryPartyID = beneficiaryParty.ID
 	}
-	return payment
+	if err := DB.Save(&payment.Attributes.BeneficiaryParty).Error; err != nil {
+		return nil, err
+	}
+
+	debtorParty := schema.Party{}
+	if err := DB.Where(&schema.Party{
+		AccountNumber: payment.Attributes.DebtorParty.AccountNumber,
+		BankID:        payment.Attributes.DebtorParty.BankID,
+		BankIDCode:    payment.Attributes.DebtorParty.BankIDCode,
+	}).First(&debtorParty).Error; err == nil {
+		payment.Attributes.DebtorParty.ID = debtorParty.ID
+		payment.Attributes.DebtorPartyID = debtorParty.ID
+	}
+	if err := DB.Save(&payment.Attributes.DebtorParty).Error; err != nil {
+		return nil, err
+	}
+
+	return payment, nil
 }
 
 // DeleteAll payments
@@ -116,7 +140,7 @@ func Get(DB *gorm.DB, ID string) (*schema.Payment, error) {
 	}
 
 	payment := schema.Payment{}
-	if err = DB.Preload("Attributes").Preload("Attributes.BeneficiaryParty").Where(&schema.Payment{ID: ID}).First(&payment).Error; err != nil {
+	if err = DB.Preload("Attributes").Preload("Attributes.BeneficiaryParty").Preload("Attributes.DebtorParty").Where(&schema.Payment{ID: ID}).First(&payment).Error; err != nil {
 		return nil, err
 	}
 	return &payment, nil
@@ -156,25 +180,17 @@ func Update(DB *gorm.DB, ID string, payment *schema.Payment) (*schema.Payment, e
 
 	if *existingPayment == *payment {
 		return nil, nil
-	} else if err = DB.Save(payment).Error; err != nil {
+	} else if err = DB.Set("gorm:association_autocreate", false).Save(payment).Error; err != nil {
 		return nil, err
 	}
 	return payment, nil
 }
 
 func syncAssociations(DB *gorm.DB, from, to *schema.Payment) *schema.Payment {
-	if to.Attributes.ID == 0 {
-		to.Attributes.ID = from.Attributes.ID
-		to.Attributes.InternalPaymentID = from.Attributes.InternalPaymentID
-	}
-
-	if schema.IsSameParty(&to.Attributes.BeneficiaryParty, &from.Attributes.BeneficiaryParty) {
-		to.Attributes.BeneficiaryParty.ID = from.Attributes.BeneficiaryParty.ID
-		to.Attributes.BeneficiaryPartyID = from.Attributes.BeneficiaryPartyID
-	} else {
-		to = loadAssociations(DB, to)
-	}
-	return to
+	to.Attributes.ID = from.Attributes.ID
+	to.Attributes.InternalPaymentID = from.Attributes.InternalPaymentID
+	p, _ := loadAssociations(DB, to)
+	return p
 }
 
 func consolidateErrors(errs []error, prefix string) error {
@@ -193,6 +209,6 @@ func consolidateValidationErrors(errs []error, prefix string) error {
 	return &ValidationError{fmt.Sprintf("%s: %s", prefix, strings.Join(errstrings, ", "))}
 }
 
-func isUniqueConstraintError(err error) bool {
-	return strings.Contains(err.Error(), "unique constraint")
+func isUniqueConstraintError(err error, constraintName string) bool {
+	return strings.Contains(err.Error(), "unique constraint") && strings.Contains(err.Error(), constraintName)
 }
