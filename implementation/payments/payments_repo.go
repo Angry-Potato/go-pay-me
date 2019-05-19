@@ -205,6 +205,8 @@ func Update(DB *gorm.DB, ID string, payment *schema.Payment) (*schema.Payment, e
 func syncAssociations(DB *gorm.DB, from, to *schema.Payment) *schema.Payment {
 	to.Attributes.ID = from.Attributes.ID
 	to.Attributes.InternalPaymentID = from.Attributes.InternalPaymentID
+	to.Attributes.ForeignExchange.ID = from.Attributes.ForeignExchange.ID
+	to.Attributes.ForeignExchange.PaymentAttributesID = from.Attributes.ID
 	p, _ := loadAssociations(DB, to)
 	return p
 }

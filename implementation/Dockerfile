@@ -2,8 +2,10 @@ FROM golang:1.12.5 as base
 
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh && \
     apt update && \
-    apt install -y netcat
+    apt install -y netcat && \
+    go get github.com/cespare/reflex
 
+ENV CGO_ENABLED=0
 WORKDIR ${GOPATH}/src/github.com/Angry-Potato/go-pay-me/implementation
 
 COPY . .
@@ -18,7 +20,6 @@ CMD ["test"]
 
 
 FROM base as builder
-ENV CGO_ENABLED=0
 RUN make build && mv app /app
 
 
