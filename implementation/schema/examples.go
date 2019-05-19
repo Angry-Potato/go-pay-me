@@ -63,13 +63,14 @@ func ValidCurrencyExchange() CurrencyExchange {
 
 // ValidCharges an example of a valid currency exchange
 func ValidCharges() Charges {
+	moneyA, moneyB := ValidMoney(), ValidMoney()
 	return Charges{
 		BearerCode:              "SHAR",
 		ReceiverChargesAmount:   "1.00",
 		ReceiverChargesCurrency: "USD",
-		SenderCharges: []Money{
-			ValidMoney(),
-			ValidMoney(),
+		SenderCharges: []*Money{
+			&moneyA,
+			&moneyB,
 		},
 	}
 }

@@ -10,7 +10,7 @@ type Money struct {
 	ID        uint   `gorm:"primary_key" json:"-"`
 	Amount    string `json:"amount"`
 	Currency  string `json:"currency"`
-	ChargesID uint   `gorm:"unique;not null" json:"-"`
+	ChargesID uint   `gorm:"not null" json:"-"`
 }
 
 func validateMoney(money *Money) []error {

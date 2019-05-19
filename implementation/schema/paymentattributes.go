@@ -5,10 +5,6 @@ import (
 	"fmt"
 )
 
-// 	"charges_information": {
-// 	  "$ref": "#/definitions/Charges/example"
-// 	},
-
 var paymentTypes = []string{"Credit"}
 var schemePaymentSubTypes = []string{"InternetBanking"}
 var schemePaymentTypes = []string{"ImmediatePayment"}
