@@ -33,6 +33,7 @@ func ValidPaymentAttributes() PaymentAttributes {
 		DebtorParty:          ValidParty(),
 		SponsorParty:         ValidParty(),
 		ForeignExchange:      ValidCurrencyExchange(),
+		//ChargesInformation:   ValidCharges(),
 	}
 }
 
@@ -57,5 +58,14 @@ func ValidCurrencyExchange() CurrencyExchange {
 		ExchangeRate:      "2.00000",
 		OriginalAmount:    "200.42",
 		OriginalCurrency:  "USD",
+	}
+}
+
+// ValidCharges an example of a valid currency exchange
+func ValidCharges() Charges {
+	return Charges{
+		BearerCode:              "SHAR",
+		ReceiverChargesAmount:   "1.00",
+		ReceiverChargesCurrency: "USD",
 	}
 }
