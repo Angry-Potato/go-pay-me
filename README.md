@@ -55,10 +55,11 @@ The implementation directory contains the API implementation in golang. I used [
 
 The golang app is built, tested, and deployed using a multistage Dockerfile. The production stage of the image was initially `FROM scratch` to be as small as possible but some minimal tooling was required in the image to have the container reliably testable, `prod-test` and `prod` stages are not a good idea because we should test exactly what runs in production, so the production image is based from alpine instead.
 
-There are two docker-compose files:
+There are three docker-compose files:
 
 - [docker-compose.yml](implementation/docker-compose.yml) - used as a way of running the app locally. Consists of the app, and a postgres db.
 - [docker-compose.test.yml](implementation/docker-compose.test.yml) - used as a way of full-stack testing the app. Consists of a tester app. Should be merged with the regular docker-compose file by chaining `-f` specifications, e.g. `docker-compose -f docker-compose.yml -f docker-compose.test.yml <command>`. Horrible, I know, but keeps the compose DRY.
+- [docker-compose.test.hot.yml](implementation/docker-compose.test.hot.yml) - same as above but with hot reloading on file change.
 
 ### Building :building_construction:
 
@@ -91,6 +92,10 @@ Execute the acceptance test suite by running the make command (requires having t
 To execute all tests (unit, integration, acceptance), run the make command:
 
     make docker-compose-test
+
+To execute all tests (unit, integration, acceptance) in containers with hot reloading (rerun on file change), run the make command:
+
+    make docker-compose-test-hot
 
 Success or failure can be seen in the logs output, and in the exit code returned by the command.
 

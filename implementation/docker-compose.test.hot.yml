@@ -1,0 +1,23 @@
+version: "3.4"
+services:
+  go-pay-me:
+    build:
+      context: .
+      target: base
+    entrypoint: /go/bin/reflex
+    command: -d fancy -R '.*\.lock$$' -R 'app' -R 'test\.go$$' -R '.*vendor.*' -R '^.vendor-new/' -s -- make run
+    volumes:
+      - type: bind
+        source: $PWD
+        target: /go/src/github.com/Angry-Potato/go-pay-me/implementation
+
+  go-pay-me-tests:
+    build:
+      context: .
+      target: base
+    entrypoint: /go/bin/reflex
+    command: -d fancy -R '.*\.lock$$' -R 'app' -r 'test\.go$$' -R '.*vendor.*' -R '^.vendor-new/' -- make test-complete
+    volumes:
+      - type: bind
+        source: $PWD
+        target: /go/src/github.com/Angry-Potato/go-pay-me/implementation

@@ -23,6 +23,8 @@ test-acceptance:
 test-async:
 	$(GOTEST) -tags="unit integration" $(TEST_ARGS)
 test-sync: test-acceptance
+test-complete:
+	make test-async && make test-sync
 clean: 
 	$(GOCLEAN)
 	rm -f $(BINARY_NAME)
@@ -44,3 +46,6 @@ docker-compose-up:
 
 docker-compose-test:
 	docker-compose -f docker-compose.yml -f docker-compose.test.yml up $(COMPOSE_PARANOID_ARGS) --exit-code-from $(IMAGE_NAME)-tests
+
+docker-compose-test-hot:
+	docker-compose -f docker-compose.yml -f docker-compose.test.yml -f docker-compose.test.hot.yml up $(COMPOSE_PARANOID_ARGS) --exit-code-from $(IMAGE_NAME)-tests
