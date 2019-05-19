@@ -73,3 +73,7 @@ I should have used testing frameworks like ginkgo & gomega to give me niceties l
 ## 16th May
 
 Introduced the payment attributes resource, took some serious fiddling and exploratory work with the GORM library but eventually reasonably happy with the implementation. I'm not happy with having the internal payment id field leak out to the consumer layer but it's something I'll have to live with for now. Very happy with relying on the integration and acceptance suites during this big change as they were largely unaffected code-wise whilst still checking the behaviour of the system correctly.
+
+## 19th May
+
+Finished implementation today, much later than expected. I tried to implement the solution utilising the functional programming paradigm, hence no taking advantage of golang's OOP features. I'm going to submit the solution now, and get in some last minute refactoring before it's reviewed.
