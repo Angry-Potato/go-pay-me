@@ -21,13 +21,13 @@ func validateCurrencyExchange(currencyExchange *CurrencyExchange) []error {
 		validationErrors = append(validationErrors, fmt.Errorf("Invalid original amount: %s", currencyExchange.OriginalAmount))
 	}
 	if currencyExchange.ContractReference == "" {
-		validationErrors = append(validationErrors, errors.New("ContractReference cannot be empty."))
+		validationErrors = append(validationErrors, errors.New("ContractReference cannot be empty"))
 	}
 	if currencyExchange.ExchangeRate == "" {
-		validationErrors = append(validationErrors, errors.New("ExchangeRate cannot be empty."))
+		validationErrors = append(validationErrors, errors.New("ExchangeRate cannot be empty"))
 	}
 	if currencyExchange.OriginalCurrency == "" {
-		validationErrors = append(validationErrors, errors.New("OriginalCurrency cannot be empty."))
+		validationErrors = append(validationErrors, errors.New("OriginalCurrency cannot be empty"))
 	}
 	return validationErrors
 }

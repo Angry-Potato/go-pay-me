@@ -33,3 +33,9 @@ func Test_validateCurrencyExchange_Returns_Error_When_OriginalAmount_Is_Invalid(
 	errs := validateCurrencyExchange(&invalidCurrencyExchange)
 	assert.NotEmpty(t, errs)
 }
+
+func Test_validateCurrencyExchange_Returns_No_Error_When_CurrencyExchange_Is_Valid(t *testing.T) {
+	validCurrencyExchange := ValidCurrencyExchange()
+	errs := validateCurrencyExchange(&validCurrencyExchange)
+	assert.Empty(t, errs)
+}
