@@ -69,3 +69,11 @@ func ValidCharges() Charges {
 		ReceiverChargesCurrency: "USD",
 	}
 }
+
+// ValidMoney an example of a valid money
+func ValidMoney() Money {
+	return Money{
+		Amount:   "5.00",
+		Currency: "USD",
+	}
+}
