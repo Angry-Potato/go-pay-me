@@ -8,12 +8,6 @@ import (
 // 	"charges_information": {
 // 	  "$ref": "#/definitions/Charges/example"
 // 	},
-// 	"fx": {
-// 	  "$ref": "#/definitions/CurrencyExchange/example"
-// 	},
-// 	"sponsor_party": {
-// 	  "$ref": "#/definitions/Party/example"
-// 	}
 
 var paymentTypes = []string{"Credit"}
 var schemePaymentSubTypes = []string{"InternetBanking"}
