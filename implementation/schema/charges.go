@@ -22,6 +22,7 @@ type Charges struct {
 	BearerCode              string `json:"bearer_code"`
 	ReceiverChargesAmount   string `json:"receiver_charges_amount"`
 	ReceiverChargesCurrency string `json:"receiver_charges_currency"`
+	PaymentAttributesID     uint   `gorm:"unique;not null" json:"-"`
 }
 
 func validateCharges(charges *Charges) []error {

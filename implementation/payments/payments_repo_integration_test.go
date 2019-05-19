@@ -105,6 +105,17 @@ func Test_Create_Returns_ValidationError_When_PaymentAttributes_ForeignExchange_
 	assert.True(t, ok)
 }
 
+func Test_Create_Returns_ValidationError_When_PaymentAttributes_ChargesInformation_Invalid(t *testing.T) {
+	DB := testhelpers.DBConnection(t, &schema.Payment{})
+	incomingPayment := schema.ValidPayment()
+	incomingPayment.Attributes.ChargesInformation.ReceiverChargesAmount = "wat"
+	createdPayment, err := Create(DB, incomingPayment)
+	assert.NotNil(t, err)
+	assert.Nil(t, createdPayment)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+}
+
 func Test_DeleteAll_Deletes_All_Payments(t *testing.T) {
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
 	Create(DB, schema.ValidPayment())
@@ -245,6 +256,25 @@ func Test_SetAll_Returns_ValidationError_If_Any_PaymentAttributes_ForeignExchang
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
 	badEgg := schema.ValidPayment()
 	badEgg.Attributes.ForeignExchange.ContractReference = ""
+	allPayments := []schema.Payment{
+		*schema.ValidPayment(),
+		*schema.ValidPayment(),
+		*badEgg,
+		*schema.ValidPayment(),
+		*schema.ValidPayment(),
+	}
+	newPayments, err := SetAll(DB, allPayments)
+	assert.NotNil(t, err)
+	assert.Empty(t, newPayments)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+	assert.Contains(t, err.Error(), badEgg.ID)
+}
+
+func Test_SetAll_Returns_ValidationError_If_Any_PaymentAttributes_ChargesInformation_Are_Invalid(t *testing.T) {
+	DB := testhelpers.DBConnection(t, &schema.Payment{})
+	badEgg := schema.ValidPayment()
+	badEgg.Attributes.ChargesInformation.BearerCode = ""
 	allPayments := []schema.Payment{
 		*schema.ValidPayment(),
 		*schema.ValidPayment(),
@@ -407,6 +437,17 @@ func Test_Update_Returns_ValidationError_When_PaymentAttributes_ForeignExchange_
 	DB := testhelpers.DBConnection(t, &schema.Payment{})
 	payment := schema.ValidPayment()
 	payment.Attributes.ForeignExchange.OriginalCurrency = ""
+	newPayment, err := Update(DB, payment.ID, payment)
+	assert.NotNil(t, err)
+	assert.Nil(t, newPayment)
+	_, ok := err.(*ValidationError)
+	assert.True(t, ok)
+}
+
+func Test_Update_Returns_ValidationError_When_PaymentAttributes_ChargesInformation_Update_Invalid(t *testing.T) {
+	DB := testhelpers.DBConnection(t, &schema.Payment{})
+	payment := schema.ValidPayment()
+	payment.Attributes.ChargesInformation.ReceiverChargesCurrency = ""
 	newPayment, err := Update(DB, payment.ID, payment)
 	assert.NotNil(t, err)
 	assert.Nil(t, newPayment)

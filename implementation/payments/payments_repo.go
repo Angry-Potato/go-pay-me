@@ -23,7 +23,7 @@ func (e *ValidationError) Error() string {
 // All payments
 func All(DB *gorm.DB) ([]schema.Payment, error) {
 	allPayments := []schema.Payment{}
-	err := DB.Preload("Attributes").Preload("Attributes.BeneficiaryParty").Preload("Attributes.DebtorParty").Preload("Attributes.SponsorParty").Preload("Attributes.ForeignExchange").Find(&allPayments).Error
+	err := DB.Preload("Attributes").Preload("Attributes.BeneficiaryParty").Preload("Attributes.DebtorParty").Preload("Attributes.SponsorParty").Preload("Attributes.ForeignExchange").Preload("Attributes.ChargesInformation").Find(&allPayments).Error
 	return allPayments, err
 }
 
@@ -49,6 +49,9 @@ func Create(DB *gorm.DB, payment *schema.Payment) (*schema.Payment, error) {
 			return nil, createErr
 		}
 		if createErr = DB.Create(&payment.Attributes.ForeignExchange).Error; createErr != nil {
+			return nil, createErr
+		}
+		if createErr = DB.Create(&payment.Attributes.ChargesInformation).Error; createErr != nil {
 			return nil, createErr
 		}
 		if saveErr := DB.Set("gorm:association_autocreate", false).Save(&payment).Error; saveErr != nil {
@@ -156,7 +159,7 @@ func Get(DB *gorm.DB, ID string) (*schema.Payment, error) {
 	}
 
 	payment := schema.Payment{}
-	if err = DB.Preload("Attributes").Preload("Attributes.BeneficiaryParty").Preload("Attributes.DebtorParty").Preload("Attributes.SponsorParty").Preload("Attributes.ForeignExchange").Where(&schema.Payment{ID: ID}).First(&payment).Error; err != nil {
+	if err = DB.Preload("Attributes").Preload("Attributes.BeneficiaryParty").Preload("Attributes.DebtorParty").Preload("Attributes.SponsorParty").Preload("Attributes.ForeignExchange").Preload("Attributes.ChargesInformation").Where(&schema.Payment{ID: ID}).First(&payment).Error; err != nil {
 		return nil, err
 	}
 	return &payment, nil
@@ -207,6 +210,8 @@ func syncAssociations(DB *gorm.DB, from, to *schema.Payment) *schema.Payment {
 	to.Attributes.InternalPaymentID = from.Attributes.InternalPaymentID
 	to.Attributes.ForeignExchange.ID = from.Attributes.ForeignExchange.ID
 	to.Attributes.ForeignExchange.PaymentAttributesID = from.Attributes.ID
+	to.Attributes.ChargesInformation.ID = from.Attributes.ChargesInformation.ID
+	to.Attributes.ChargesInformation.PaymentAttributesID = from.Attributes.ID
 	p, _ := loadAssociations(DB, to)
 	return p
 }

@@ -36,6 +36,7 @@ type PaymentAttributes struct {
 	SponsorParty         Party            `json:"sponsor_party,omitempty"`
 	SponsorPartyID       uint             `json:"-"`
 	ForeignExchange      CurrencyExchange `json:"fx,omitempty"`
+	ChargesInformation   Charges          `json:"charges_information,omitempty"`
 }
 
 func validatePaymentAttributes(attributes *PaymentAttributes) []error {
@@ -80,5 +81,6 @@ func validatePaymentAttributes(attributes *PaymentAttributes) []error {
 		validationErrors = append(validationErrors, errors.New("InternalPaymentID invalid, must be purely alphanumeric with dashes"))
 	}
 	validationErrors = append(validationErrors, validateParties(&attributes.BeneficiaryParty, &attributes.DebtorParty, &attributes.SponsorParty)...)
-	return append(validationErrors, validateCurrencyExchange(&attributes.ForeignExchange)...)
+	validationErrors = append(validationErrors, validateCurrencyExchange(&attributes.ForeignExchange)...)
+	return append(validationErrors, validateCharges(&attributes.ChargesInformation)...)
 }

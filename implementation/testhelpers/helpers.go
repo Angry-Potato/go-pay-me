@@ -25,7 +25,7 @@ func APIAddress(t *testing.T) string {
 // DBConnection gets a DB connection
 func DBConnection(t *testing.T, models ...interface{}) *gorm.DB {
 	t.Helper()
-	DB, err := db.Initialise(&schema.Payment{}, &schema.PaymentAttributes{}, &schema.Party{}, &schema.Party{}, &schema.CurrencyExchange{})
+	DB, err := db.Initialise(&schema.Payment{}, &schema.PaymentAttributes{}, &schema.Party{}, &schema.Party{}, &schema.CurrencyExchange{}, &schema.Charges{})
 
 	//this is bad, where should I do this?
 	DB.Model(&schema.PaymentAttributes{}).AddForeignKey("internal_payment_id", "payments(id)", "CASCADE", "CASCADE")
@@ -33,6 +33,7 @@ func DBConnection(t *testing.T, models ...interface{}) *gorm.DB {
 	DB.Model(&schema.PaymentAttributes{}).AddForeignKey("debtor_party_id", "parties(id)", "SET NULL", "CASCADE")
 	DB.Model(&schema.PaymentAttributes{}).AddForeignKey("sponsor_party_id", "parties(id)", "SET NULL", "CASCADE")
 	DB.Model(&schema.CurrencyExchange{}).AddForeignKey("payment_attributes_id", "payment_attributes(id)", "CASCADE", "CASCADE")
+	DB.Model(&schema.Charges{}).AddForeignKey("payment_attributes_id", "payment_attributes(id)", "CASCADE", "CASCADE")
 
 	assert.Nil(t, err)
 	assert.NotNil(t, DB)
