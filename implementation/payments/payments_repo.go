@@ -197,7 +197,7 @@ func Update(DB *gorm.DB, ID string, payment *schema.Payment) (*schema.Payment, e
 
 	payment = syncAssociations(DB, existingPayment, payment)
 
-	if *existingPayment == *payment {
+	if existingPayment == payment {
 		return nil, nil
 	} else if err = DB.Set("gorm:association_autocreate", false).Save(payment).Error; err != nil {
 		return nil, err
