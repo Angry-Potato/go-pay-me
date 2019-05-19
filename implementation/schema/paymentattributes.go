@@ -53,28 +53,28 @@ func validatePaymentAttributes(attributes *PaymentAttributes) []error {
 		validationErrors = append(validationErrors, fmt.Errorf("Invalid amount: %s", attributes.Amount))
 	}
 	if attributes.Currency == "" {
-		validationErrors = append(validationErrors, errors.New("Currency cannot be empty."))
+		validationErrors = append(validationErrors, errors.New("Currency cannot be empty"))
 	}
 	if attributes.EndToEndReference == "" {
-		validationErrors = append(validationErrors, errors.New("EndToEndReference cannot be empty."))
+		validationErrors = append(validationErrors, errors.New("EndToEndReference cannot be empty"))
 	}
 	if attributes.NumericReference == "" {
-		validationErrors = append(validationErrors, errors.New("NumericReference cannot be empty."))
+		validationErrors = append(validationErrors, errors.New("NumericReference cannot be empty"))
 	}
 	if attributes.PaymentID == "" {
-		validationErrors = append(validationErrors, errors.New("Amount cannot be empty."))
+		validationErrors = append(validationErrors, errors.New("Amount cannot be empty"))
 	}
 	if attributes.PaymentPurpose == "" {
-		validationErrors = append(validationErrors, errors.New("Currency cannot be empty."))
+		validationErrors = append(validationErrors, errors.New("Currency cannot be empty"))
 	}
 	if attributes.PaymentScheme == "" {
-		validationErrors = append(validationErrors, errors.New("EndToEndReference cannot be empty."))
+		validationErrors = append(validationErrors, errors.New("EndToEndReference cannot be empty"))
 	}
 	if attributes.ProcessingDate == "" {
-		validationErrors = append(validationErrors, errors.New("NumericReference cannot be empty."))
+		validationErrors = append(validationErrors, errors.New("NumericReference cannot be empty"))
 	}
 	if attributes.Reference == "" {
-		validationErrors = append(validationErrors, errors.New("NumericReference cannot be empty."))
+		validationErrors = append(validationErrors, errors.New("NumericReference cannot be empty"))
 	}
 	if attributes.InternalPaymentID != "" && !isUUID(attributes.InternalPaymentID) {
 		validationErrors = append(validationErrors, errors.New("InternalPaymentID invalid, must be purely alphanumeric with dashes"))
