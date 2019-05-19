@@ -67,6 +67,10 @@ func ValidCharges() Charges {
 		BearerCode:              "SHAR",
 		ReceiverChargesAmount:   "1.00",
 		ReceiverChargesCurrency: "USD",
+		SenderCharges: []Money{
+			ValidMoney(),
+			ValidMoney(),
+		},
 	}
 }
 

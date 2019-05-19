@@ -18,11 +18,12 @@ import (
 
 // Charges resource
 type Charges struct {
-	ID                      uint   `gorm:"primary_key" json:"-"`
-	BearerCode              string `json:"bearer_code"`
-	ReceiverChargesAmount   string `json:"receiver_charges_amount"`
-	ReceiverChargesCurrency string `json:"receiver_charges_currency"`
-	PaymentAttributesID     uint   `gorm:"unique;not null" json:"-"`
+	ID                      uint    `gorm:"primary_key" json:"-"`
+	BearerCode              string  `json:"bearer_code"`
+	ReceiverChargesAmount   string  `json:"receiver_charges_amount"`
+	ReceiverChargesCurrency string  `json:"receiver_charges_currency"`
+	SenderCharges           []Money `json:"sender_charges"`
+	PaymentAttributesID     uint    `gorm:"unique;not null" json:"-"`
 }
 
 func validateCharges(charges *Charges) []error {
@@ -36,5 +37,13 @@ func validateCharges(charges *Charges) []error {
 	if charges.ReceiverChargesCurrency == "" {
 		validationErrors = append(validationErrors, errors.New("ReceiverChargesCurrency cannot be empty"))
 	}
+
+	for _, money := range charges.SenderCharges {
+		moneyErrs := validateMoney(&money)
+		if len(moneyErrs) != 0 {
+			validationErrors = append(validationErrors, moneyErrs...)
+		}
+	}
+
 	return validationErrors
 }
